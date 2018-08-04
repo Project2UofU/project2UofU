@@ -1,4 +1,5 @@
-var db = require("../models");
+var path = require("path");
+var db = require(path.join(__dirname, "../models"));
 
 module.exports = function (app, passport) {
   // Load index page

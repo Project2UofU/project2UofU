@@ -20,8 +20,12 @@
     "express-session": "^1.15.6",
     "morgan": "^1.9.0",
     "mysql2": "^1.5.3",
+<<<<<<< HEAD
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",
+=======
+    "path": "^0.12.7",
+>>>>>>> master
     "sequelize": "^4.38.0"
   },
   "devDependencies": {
