@@ -1,5 +1,5 @@
 var path = require("path");
-var db = require(path.join(__dirname, "../models"));
+// var db = require(path.join(__dirname, "../models"));
 var publicPath = __dirname + "/../public/views";
 
 module.exports = function (app) {
