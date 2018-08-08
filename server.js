@@ -24,15 +24,20 @@ app.engine('handlebars', exphbs({
 }));
 app.set("view engine", "handlebars");
 
+
+var apiRouter = express.Router();
+app.use("/api", apiRouter);
+
 // Routes
-require("./routes/apiRoutes")(app);
+require("./routes/apiRoutes")(apiRouter);
 require("./routes/htmlRoutes")(app);
 
-var syncOptions = { force: false };
+var syncOptions = { force: true }; // TODO: Change to false
 
 // If running a test, set syncOptions.force to true
 // clearing the `testdb`
-if (process.env.NODE_ENV === "test") {
+// if (process.env.NODE_ENV === "test") { // TODO: Add this line back in
+if (process.env.NODE_ENV !== "production") {
   syncOptions.force = true;
 }
 
