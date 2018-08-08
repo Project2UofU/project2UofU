@@ -4,6 +4,9 @@
       <div class="col-8 offset-2">
         <h1>{{msg}}</h1>
         <h2>This is our Home Page!</h2>
+        {{!-- <button id="fbLogin" class="btn btn-primary">Log in with Facebook</button> --}}
+        <a href="./login/facebook">Login with Facebook</a>
+        <a href="./auth/google">Sign In with Google</a>
         <form class="clearfix mb-4" action="POST">
           <div class="form-group">
             <label for="example-text">Example Text</label>
@@ -21,6 +24,7 @@
           <li data-id="{{this.id}}" class="list-group-item">
             <a href="example/{{this.id}}">{{this.text}}</a>
             <button class="btn btn-danger float-right delete">ｘ</button>
+
           </li>
           {{/each}}
         </ul>

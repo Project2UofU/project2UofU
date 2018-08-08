@@ -25,15 +25,15 @@ module.exports = function (app, passport) {
     });
   });
 
-  // Render 404 page for any unmatched routes
-  app.get("*", function (req, res) {
-    res.render("404");
-  });
-
   app.get('/login',
     function (req, res) {
       res.render('login');
     });
+
+  app.get("/logout", function (req, res) {
+    req.logout();
+    res.redirect("/");
+  });
 
   app.get('/login/facebook',
     passport.authenticate('facebook'));
@@ -53,4 +53,30 @@ module.exports = function (app, passport) {
         user: req.user
       });
     });
+
+  app.get('/auth/google',
+    passport.authenticate('google', {
+      scope: ['https://www.googleapis.com/auth/plus.login']
+    }));
+
+
+  app.get("/auth/google/callback",
+    passport.authenticate("google", {
+      failureRedirect: "/login"
+    }),
+    function (req, res) {
+      res.redirect("/");
+    });
+
+  app.get("/hi", function (req, res) {
+    res.send("text");
+  });
+
+  // app.get('/auth/facebook', passport.authenticate('facebook'));
+
+  // app.get('/auth/provider/callback',
+  //   passport.authenticate('provider', {
+  //     successRedirect: '/',
+  //     failureRedirect: '/login'
+  //   }));
 };

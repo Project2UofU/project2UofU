@@ -3,30 +3,49 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var exphbs = require("express-handlebars");
 var passport = require('passport');
-var Strategy = require('passport-facebook').Strategy;
+var FaceBookStrategy = require('passport-facebook').Strategy;
+var GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 var path = require("path");
 var env = process.env.NODE_ENV || "development";
 var config = require(__dirname + "/config/config.json")[env];
 var FACEBOOK_CLIENT_ID = config.facebook.client_id;
 var FACEBOOK_CLIENT_SECRET = config.facebook.client_secret;
+var GOOGLE_CLIENT_ID = config.google.client_id;
+var GOOGLE_CLIENT_SECRET = config.google.client_secret;
 var db = require("./models");
 
+
 var app = express();
-var PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
+
 // FB login
-passport.use(new Strategy({
+passport.use(new FaceBookStrategy({
   clientID: FACEBOOK_CLIENT_ID,
   clientSecret: FACEBOOK_CLIENT_SECRET,
-  callbackURL: "http://localhost:3000/auth/facebook/callback"
+  callbackURL: "http://localhost:8080/hi"
 },
 function(accessToken, refreshToken, profile, cb) {
   User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+    console.log(user);
+    return cb(err, user);
+  });
+}
+));
+
+passport.use(new GoogleStrategy({
+  clientID: GOOGLE_CLIENT_ID,
+  clientSecret: GOOGLE_CLIENT_SECRET,
+  callbackURL: "http://localhost:8080/hi"
+},
+function(token, tokenSecret, profile, done) {
+  User.findOrCreate({ googleId: profile.id }, function (err, user) {
+    console.log(user);
     return cb(err, user);
   });
 }
@@ -90,5 +109,7 @@ db.sequelize.sync(syncOptions).then(function() {
     });
   }
 });
+
+
 
 module.exports = app;
