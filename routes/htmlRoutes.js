@@ -7,7 +7,13 @@ module.exports = function (app) {
   app.get("/", function (req, res) {
     res.sendFile(path.join(publicPath, "index.html"));
   });
-  app.get("/public/views  ", function (req, res) {
-    res.sendFile(path.join(publicPath, "signupform.html"));
+  app.get("/sign-up", function (req, res) {
+    res.sendFile(path.join(publicPath, "signup.html"));
+  });
+  // app.get("/user-home", function (req, res) {
+  //   res.sendFile(path.join(publicPath, ""));
+  // });
+  app.get("/user/competitions", function(req, res) {
+    res.sendFile(path.join(publicPath, ""));
   });
 };
