@@ -7,7 +7,8 @@ module.exports = function (app) {
   app.get("/", function (req, res) {
     res.sendFile(path.join(publicPath, "index.html"));
   });
-  app.get("/public/views  ", function (req, res) {
-    res.sendFile(path.join(publicPath, "signupform.html"));
+
+  app.get("/signup", function (req, res) {
+    res.sendFile(path.join(publicPath, "signup.html"));
   });
 };
