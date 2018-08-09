@@ -1,45 +1,9 @@
 var path = require("path");
 var sequelize = require("sequelize");
 var db = require(path.join(__dirname, "../models"));
-var request = require('request');
 
 // /api/user/*
 module.exports = function (app) {
-
-    // app.post("/addEntry", function (req, res) {
-    //     if (!req.body.competitionId) {
-    //         return res.status(400).json({ error: "Missing competitionId" });
-    //     } else if (!req.body.userId) {
-    //         return res.status(400).json({ error: "Missing userId" });
-    //     } else if (!req.body.value) {
-    //         return res.status(400).json({ error: "Missing value" });
-    //     }
-    app.post("/addDummyData", function (req, res) {
-        request.post('http://localhost:3000/api/user/create', {
-            json: {
-                name: 'Michael Daniels',
-                password: "test"
-            }
-        }, function (error, response, user) {
-            request.post('http://localhost:3000/api/competition/create', {
-                json: {
-                    title: "Weight Loss",
-                    ownerId: user.id
-                }
-            }, function (error, response, competition) {
-                console.log(competition);
-                request.post('http://localhost:3000/api/competition/addEntry', {
-                    json: {
-                        userId: user.id,
-                        competitionId: competition.id,
-                        value:"test"
-                    }
-                }, function (error, response, entry) {
-                    res.json(entry);
-                });
-            });
-        });
-    });
 
     app.post("/create", function (req, res) {
         var body = req.body;
@@ -64,34 +28,64 @@ module.exports = function (app) {
         });
     });
 
+    // Example:
+    // {
+    //     "competitions": [
+    //       {
+    //         "title": "Weight Loss",
+    //         "id": "49d5bccc-fd94-4f76-a8c5-8d0afe756618",
+    //         "participantCount": 3
+    //       }
+    //     ]
+    //   }
 
-    // Get Competitions with the participant count
+    // URL: api/user/competitions
+    // Method: GET
+    // Description: Get Competitions with the participant count
+    // Parameters: 
+    // - ownerId: String
     app.get("/competitions", function (req, res) {
         var ownerId = req.query.ownerId
         if (!ownerId) {
             return res.status(400).json({ error: "Missing ownerId" });
         }
 
-
-        // Get all competitions
-        //   - Get all users in a competition
-        // on competition you have an owner it wokrs not you have participants 
-        db.Competition.findAll({
+        return db.Competition.findAll({
             where: { ownerId: ownerId },
-            attributes: ['id', 'title', 'createdAt'],
+            attributes: ['id', 'title', 'createdAt', 'updatedAt', [sequelize.fn('COUNT', sequelize.col('competitions.id')), 'participantCount']],
             include: [{
+                as: "competitions",
                 model: db.UserCompetition,
-                include: [{
+                attributes: ["id"],
+                include: {
                     model: db.User,
-                    as: 'participant',
-                    attributes: ['id', 'name']
-                }]
-                // as: "competition",
-                // attributes: [sequelize.fn('COUNT', sequelize.col('userId')), 'hello']
+                    as: "participant",
+                    attributes: ["name", "id"],
+                }
             }]
-            //[[sequelize.fn('COUNT', sequelize.col('hats')), 'no_hats']]
-        }).then(function (dbCompetition) {
-            res.json(dbCompetition);
+        }).then(function (competitions) {
+            var competitionsArray = [];
+            competitions.forEach(competition => {
+                if (competition.id === null) {
+                    // TODO: Look into an issue where this can return an object with null values if it doesn't exist
+                    return;
+                }
+
+                var competition = competition.get();
+                var competitionObject = {
+                    title: competition.title,
+                    id: competition.id
+                }
+                if (competition.participantCount) {
+                    competitionObject.participantCount = competition.participantCount
+                }
+
+                competitionsArray.push(competitionObject);
+            })
+
+            res.json({ "competitions": competitionsArray });
+        }).catch(function (err) {
+            res.send(err);
         });
 
     });

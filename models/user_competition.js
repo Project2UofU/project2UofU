@@ -1,6 +1,10 @@
 module.exports = function (sequelize, DataTypes) {
     var UserCompetition = sequelize.define("UserCompetition", {
-        
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
     });
 
     UserCompetition.associate = function (models) {

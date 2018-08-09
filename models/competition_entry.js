@@ -1,5 +1,10 @@
 module.exports = function (sequelize, DataTypes) {
     var CompetitionEntry = sequelize.define("CompetitionEntry", {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
         value: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -10,8 +15,8 @@ module.exports = function (sequelize, DataTypes) {
     });
 
     CompetitionEntry.associate = function (models) {
-        CompetitionEntry.belongsTo(models.Competition, { as: 'competition', foreignKey: { allowNull: false } });
-        CompetitionEntry.belongsTo(models.User, { as: 'user', foreignKey: { allowNull: false } });
+        CompetitionEntry.belongsTo(models.Competition, { as: 'competition', foreignKey: { foreignKey: "competitionId", allowNull: false } });
+        CompetitionEntry.belongsTo(models.User, { as: 'user', foreignKey: { foreignKey: "userId", allowNull: false } });
     };
 
     return CompetitionEntry;

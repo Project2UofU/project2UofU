@@ -5,23 +5,30 @@ var db = require(path.join(__dirname, "../models"));
 module.exports = function (app) {
 
     app.post("/create", function (req, res) {
-        if (!req.body.title) {
+        var title = req.body.title;
+        var ownerId = req.body.ownerId;
+        if (!title) {
             return res.status(400).json({ error: "Missing title" });
-        } else if (!req.body.ownerId) {
+        } else if (!ownerId) {
             return res.status(400).json({ error: "Missing ownerId" });
+        }
+
+        var competitionParams = {
+            title: title,
+            ownerId: ownerId
         }
 
         // TODO: Find a better way to do this
         db.User.findOne({
-            where: { id: req.body.ownerId }
+            where: { id: ownerId }
         }).then(function (dbUser) {
-            db.Competition.create(req.body).then(function (dbCompetition) {
-                var params = {
+            db.Competition.create(competitionParams).then(function (dbCompetition) {
+                var userCompetitionParams = {
                     participantId: dbUser.id,
                     competitionId: dbCompetition.id
                 }
 
-                db.UserCompetition.create(params).then(function (dbUserCompetition) {
+                db.UserCompetition.create(userCompetitionParams).then(function (dbUserCompetition) {
                     res.json(dbCompetition);
                 }).catch(function (err) {
                     res.send(err);
@@ -34,28 +41,83 @@ module.exports = function (app) {
         });
     });
 
+    // Example:
+    // {
+    //     "competitions": [
+    //       {
+    //         "title": "Weight Loss",
+    //         "id": "f4c7300f-edfd-4da0-a15d-6e120595d18e",
+    //         "participants": [
+    //           {
+    //             "name": "Michael",
+    //             "id": "2bbd7a0d-7d93-417e-a888-7245b582c483"
+    //           },
+    //           {
+    //             "name": "Thomas",
+    //             "id": "a46b948c-3b5f-4703-afcc-352f4f859398"
+    //           },
+    //           {
+    //             "name": "Daniel",
+    //             "id": "bc83a0a6-3db4-41ec-84c0-c0433a01b1cf"
+    //           }
+    //         ]
+    //       }
+    //     ]
+    //   }
+
+    // URL: api/competition/[id]
+    // Method: GET
+    // Description: Get Competitions with their participants
     app.get("/:id", function (req, res) {
         var id = req.params.id
         if (!id) {
-            return res.status(400).json({ error: "Missing id" });
+            return res.status(400).json({ error: "Missing competition id" });
         }
 
-        db.Competition.findOne({
-            where: { id: req.params.id },
-            attributes: ['id', 'title', 'createdAt'],
+        return db.Competition.findOne({
+            where: { id: id },
+            attributes: ['id', 'title', 'createdAt', 'updatedAt'],
             include: [{
-                model: db.User,
-                as: 'owner',
-                attributes: ['id', 'name']
+                as: "competitions",
+                model: db.UserCompetition,
+                attributes: ["id"],
+                include: {
+                    model: db.User,
+                    as: "participant",
+                    attributes: ["name", "id"],
+                }
             }]
-        }).then(function (dbCompetition) {
-            res.json(dbCompetition);
+        }).then(function (competition) {
+            var competition = competition.get();
+            var competitionObject = {
+                title: competition.title,
+                id: competition.id
+            }
+
+            if (competition.participantCount) {
+                competitionObject.participantCount = competition.participantCount
+            }
+
+            var participants = [];
+            competition.competitions.forEach(userCompetition => {
+                var userCompetition = userCompetition.get();
+                var user = {
+                    name: userCompetition.participant.name,
+                    id: userCompetition.participant.id
+                }
+
+                participants.push(user);
+            })
+
+            competitionObject.participants = participants;
+            res.json({ "competition": competitionObject });
+        }).catch(function (err) {
+            res.send(err);
         });
+
     });
 
-
     app.post("/addEntry", function (req, res) {
-        console.log(req.body);
         if (!req.body.competitionId) {
             return res.status(400).json({ error: "Missing competitionId" });
         } else if (!req.body.userId) {
@@ -69,7 +131,6 @@ module.exports = function (app) {
         }).catch(function (err) {
             res.send(err);
         });
-
     });
 
     app.post("/addParticipant", function (req, res) {
@@ -90,23 +151,19 @@ module.exports = function (app) {
 
     });
 
-    app.get("/entries", function (req, res) {
-        var competitionId = req.query.competitionId
-        if (!competitionId) {
-            return res.status(400).json({ error: "Missing competitionId" });
+    app.get("/entries/:id", function (req, res) {
+        var id = req.params.id
+        if (!id) {
+            return res.status(400).json({ error: "Missing id" });
         }
 
         db.CompetitionEntry.findAll({
-            where: { competitionId: competitionId },
+            where: { competitionId: id },
             attributes: ['value'],
             include: [{
                 model: db.User,
                 as: 'user',
-                attributes: ['id', 'name']
-            }, {
-                model: db.Competition,
-                as: 'competition',
-                attributes: ['id', 'title']
+                attributes: ['id', 'name', 'createdAt']
             }]
         }).then(function (dbCompetitionEntries) {
             res.json(dbCompetitionEntries);
