@@ -1,30 +1,14 @@
 var path = require("path");
-var db = require(path.join(__dirname, "../models"));
+// var db = require(path.join(__dirname, "../models"));
+var publicPath = __dirname + "/../public/views";
 
 module.exports = function (app, passport) {
   // Load index page
   app.get("/", function (req, res) {
-    db.Example.findAll({}).then(function (dbExamples) {
-      res.render("index", {
-        msg: "Welcome!",
-        examples: dbExamples
-      });
-    });
+    res.sendFile(path.join(publicPath, "index.html"));
   });
 
-  // Load example page and pass in an example by id
-  app.get("/example/:id", function (req, res) {
-    db.Example.findOne({
-      where: {
-        id: req.params.id
-      }
-    }).then(function (dbExample) {
-      res.render("example", {
-        example: dbExample
-      });
-    });
-  });
-
+  
   app.get('/login',
     function (req, res) {
       res.render('login');
@@ -68,9 +52,7 @@ module.exports = function (app, passport) {
       res.redirect("/");
     });
 
-  app.get("/hi", function (req, res) {
-    res.send("text");
-  });
+  
 
   // app.get('/auth/facebook', passport.authenticate('facebook'));
 
@@ -79,4 +61,7 @@ module.exports = function (app, passport) {
   //     successRedirect: '/',
   //     failureRedirect: '/login'
   //   }));
+  app.get("/signup", function (req, res) {
+    res.sendFile(path.join(publicPath, "signup.html"));
+  });
 };

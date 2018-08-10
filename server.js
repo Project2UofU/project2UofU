@@ -1,7 +1,6 @@
 require("dotenv").config();
 var express = require("express");
 var bodyParser = require("body-parser");
-var exphbs = require("express-handlebars");
 var passport = require('passport');
 var FaceBookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
@@ -63,6 +62,7 @@ passport.deserializeUser(function(obj, cb) {
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+
 // Use application-level middleware for common functionality, including
 // logging, parsing, and session handling.
 app.use(require('morgan')('combined'));
@@ -75,17 +75,11 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveU
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Handlebars
-app.engine(
-  "handlebars",
-  exphbs({
-    defaultLayout: "main"
-  })
-);
-app.set("view engine", "handlebars");
-
 // Routes
-require("./routes/apiRoutes")(app);
+var apiRouter = express.Router();
+app.use("/api", apiRouter);
+
+require("./routes/apiRoutes")(apiRouter);
 require("./routes/htmlRoutes")(app, passport);
 
 
@@ -97,16 +91,53 @@ if (process.env.NODE_ENV === "test") {
   syncOptions.force = true;
 }
 
+const seed = () => {
+  return Promise.all([
+    db.User.create({ name: "Michael", password: "blue" }),
+    db.User.create({ name: "Thomas", password: "red" }),
+    db.User.create({ name: "Daniel", password: "yellow" }),
+  ])
+    .then(result => {
+      const michael = result[0];
+      const thomas = result[1];
+      const daniel = result[2];
+      return Promise.all([
+        db.Competition.create({ title: "Weight Loss", ownerId: michael.id })
+      ])
+        .then(result => {
+          const competition = result[0];
+          return Promise.all([
+            db.UserCompetition.create({ competitionId: competition.id, participantId: michael.id }),
+            db.UserCompetition.create({ competitionId: competition.id, participantId: thomas.id }),
+            db.UserCompetition.create({ competitionId: competition.id, participantId: daniel.id }),
+            db.CompetitionEntry.create({ value: "351", competitionId: competition.id, userId: michael.id }),
+            db.CompetitionEntry.create({ value: "741", competitionId: competition.id, userId: thomas.id }),
+            db.CompetitionEntry.create({ value: "61", competitionId: competition.id, userId: michael.id }),
+            db.CompetitionEntry.create({ value: "124", competitionId: competition.id, userId: daniel.id }),
+            db.CompetitionEntry.create({ value: "714", competitionId: competition.id, userId: daniel.id }),
+            db.CompetitionEntry.create({ value: "238", competitionId: competition.id, userId: thomas.id })
+          ])
+        })
+    }).catch(function (err) {
+      console.log("Error: " + err);
+    });
+}
+
 // Starting the server, syncing our models ------------------------------------/
-db.sequelize.sync(syncOptions).then(function() {
+db.sequelize.sync(syncOptions).then(function () {
   if (process.env.NODE_ENV !== "production") {
-    app.listen(PORT, function() {
+    app.listen(PORT, function () {
       console.log(
         "==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.",
         PORT,
         PORT
       );
     });
+  }
+}).then(() => {
+  if (process.env.NODE_ENV === "test") {
+    // Populate with test data
+    seed();
   }
 });
 
