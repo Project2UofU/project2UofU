@@ -27,7 +27,7 @@ app.use(express.static("public"));
 passport.use(new FaceBookStrategy({
   clientID: FACEBOOK_CLIENT_ID,
   clientSecret: FACEBOOK_CLIENT_SECRET,
-  callbackURL: "http://localhost:8080/hi"
+  callbackURL: "http://localhost:8080/"
 },
 function(accessToken, refreshToken, profile, cb) {
   User.findOrCreate({ facebookId: profile.id }, function (err, user) {
@@ -40,7 +40,7 @@ function(accessToken, refreshToken, profile, cb) {
 passport.use(new GoogleStrategy({
   clientID: GOOGLE_CLIENT_ID,
   clientSecret: GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:8080/hi"
+  callbackURL: "http://localhost:8080/"
 },
 function(token, tokenSecret, profile, done) {
   User.findOrCreate({ googleId: profile.id }, function (err, user) {
