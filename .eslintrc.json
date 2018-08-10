@@ -4,6 +4,7 @@
         "commonjs": true,
         "node": true
     },
+    "parser": "babel-eslint",
     "extends": "prettier",
     "plugins": [
         "prettier"
@@ -24,7 +25,7 @@
         "camelcase": "error",
         "indent": [
             "error",
-            2
+            4
         ],
         "linebreak-style": [
             "error",

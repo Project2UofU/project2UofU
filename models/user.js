@@ -19,7 +19,7 @@ module.exports = function (sequelize, DataTypes) {
             hooks: {
                 beforeFind: function (options) {
                     options.attributes = {};
-                    options.attributes.exclude = ['createdAt', 'updatedAt', 'password', 'facebookId', 'googleId'];
+                    options.attributes.exclude = ["createdAt", "updatedAt", "password", "facebookId", "googleId"];
                     return options;
                 }
             }
@@ -27,9 +27,9 @@ module.exports = function (sequelize, DataTypes) {
     );
 
     User.associate = function (models) {
-        User.hasMany(models.Competition, { foreignKey: 'ownerId', onDelete: 'cascade' });
-        User.hasMany(models.CompetitionEntry, { as: "entries", foreignKey: 'userId', onDelete: 'cascade' });
-        User.hasMany(models.UserCompetition, { as: "participants", foreignKey: 'participantId', onDelete: 'cascade' });
+        User.hasMany(models.Competition, { foreignKey: "ownerId", onDelete: "cascade" });
+        User.hasMany(models.CompetitionEntry, { as: "entries", foreignKey: "userId", onDelete: "cascade" });
+        User.hasMany(models.UserCompetition, { as: "participants", foreignKey: "participantId", onDelete: "cascade" });
     };
 
     return User;
