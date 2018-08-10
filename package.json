@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "npm run NODE_ENV=test mocha -u tdd --reporter spec --exit"
+    "test": "NODE_ENV=test mocha -u tdd --reporter spec --exit"
   },
   "license": "ISC",
   "dependencies": {
