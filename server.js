@@ -1,24 +1,87 @@
 require("dotenv").config();
 var express = require("express");
 var bodyParser = require("body-parser");
+var passport = require('passport');
+var FaceBookStrategy = require('passport-facebook').Strategy;
+var GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 var path = require("path");
-
+var env = process.env.NODE_ENV || "development";
+var config = require(__dirname + "/config/config.json")[env];
+var FACEBOOK_CLIENT_ID = config.facebook.client_id;
+var FACEBOOK_CLIENT_SECRET = config.facebook.client_secret;
+var GOOGLE_CLIENT_ID = config.google.client_id;
+var GOOGLE_CLIENT_SECRET = config.google.client_secret;
 var db = require("./models");
 
+
 var app = express();
-var PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "/public/")));
+app.use(express.static("public"));
 
+
+// FB login
+passport.use(new FaceBookStrategy({
+  clientID: FACEBOOK_CLIENT_ID,
+  clientSecret: FACEBOOK_CLIENT_SECRET,
+  callbackURL: "http://localhost:8080/"
+},
+function(accessToken, refreshToken, profile, cb) {
+  User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+    console.log(user);
+    return cb(err, user);
+  });
+}
+));
+
+passport.use(new GoogleStrategy({
+  clientID: GOOGLE_CLIENT_ID,
+  clientSecret: GOOGLE_CLIENT_SECRET,
+  callbackURL: "http://localhost:8080/"
+},
+function(token, tokenSecret, profile, done) {
+  User.findOrCreate({ googleId: profile.id }, function (err, user) {
+    console.log(user);
+    return cb(err, user);
+  });
+}
+));
+
+passport.serializeUser(function(user, cb) {
+  cb(null, user);
+});
+
+passport.deserializeUser(function(obj, cb) {
+  cb(null, obj);
+});
+
+// Configure view engine to render EJS templates.
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+
+
+// Use application-level middleware for common functionality, including
+// logging, parsing, and session handling.
+app.use(require('morgan')('combined'));
+app.use(require('cookie-parser')());
+app.use(require('body-parser').urlencoded({ extended: true }));
+app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+
+// Initialize Passport and restore authentication state, if any, from the
+// session.
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Routes
 var apiRouter = express.Router();
 app.use("/api", apiRouter);
 
-// Routes
 require("./routes/apiRoutes")(apiRouter);
-require("./routes/htmlRoutes")(app);
+require("./routes/htmlRoutes")(app, passport);
+
 
 var syncOptions = { force: false };
 
@@ -77,5 +140,7 @@ db.sequelize.sync(syncOptions).then(function () {
     seed();
   }
 });
+
+
 
 module.exports = app;
