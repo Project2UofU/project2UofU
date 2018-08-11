@@ -113,7 +113,7 @@ module.exports = function (app) {
                 include: [{
                     model: db.User,
                     as: "participant",
-                    attributes: ["name", "id"],
+                    attributes: ["username", "id"],
                     include: {
                         as: "entries",
                         model: db.CompetitionEntry,
@@ -136,7 +136,7 @@ module.exports = function (app) {
             competition.competitions.forEach(userCompetition => {
                 var userCompetition = userCompetition.get();
                 var user = {
-                    name: userCompetition.participant.name,
+                    username: userCompetition.participant.username,
                     id: userCompetition.participant.id,
                     entries: []
                 }

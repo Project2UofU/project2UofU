@@ -95,9 +95,9 @@ if (process.env.NODE_ENV === "test") {
 
 const seed = () => {
   return Promise.all([
-    db.User.create({ userName: "Michael", password: "blue" }),
-    db.User.create({ userName: "Thomas", password: "red" }),
-    db.User.create({ userName: "Daniel", password: "yellow" }),
+    db.User.create({ username: "Michael", password: "blue" }),
+    db.User.create({ username: "Thomas", password: "red" }),
+    db.User.create({ username: "Daniel", password: "yellow" }),
   ])
     .then(result => {
       const michael = result[0];
