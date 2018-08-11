@@ -7,24 +7,24 @@ module.exports = function (app) {
 
     app.post("/create", function (req, res) {
         var body = req.body;
-        var userName = body.userName.trim();
+        var username = body.username.trim();
         var password = body.password; // TODO: Validate and Encrypt the password
-        if (!userName) {
+        if (!username) {
             return res.status(400).json({
                 error: "Missing username"
             });
-        } else if (name.length == 0) {
+        } else if (username.length == 0) {
             return res.status(400).json({
-                error: "Name must container at least 1 character"
+                error: "Username must container at least 1 character"
             });
-        } else if (name.length > 50) {
+        } else if (Username.length > 50) {
             return res.status(400).json({
-                error: "Name must be less than 50 characters"
+                error: "Username must be less than 50 characters"
             });
         }
 
         var params = {
-            userName: userName,
+            username: username,
             password: password
         }
         db.User.create(params).then(function (dbUser) {
@@ -51,8 +51,8 @@ module.exports = function (app) {
     // Parameters: 
     // - ownerId: String
     app.get("/login", function (req, res) {
-        var userName = req.query.username;
-        if (!userName) {
+        var username = req.query.username;
+        if (!username) {
             return res.status(400).json({
                 error: "Missing username"
             });
@@ -65,7 +65,7 @@ module.exports = function (app) {
         }
         db.User.findOne({
             where: {
-                userName: userName,
+                username: username,
                 password: password
             }
         }).then(function (dbUser) {
@@ -96,7 +96,7 @@ module.exports = function (app) {
                 include: {
                     model: db.User,
                     as: "participant",
-                    attributes: ["name", "id"],
+                    attributes: ["username", "id"],
                 }
             }]
         }).then(function (competitions) {
