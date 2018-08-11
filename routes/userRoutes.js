@@ -17,7 +17,7 @@ module.exports = function (app) {
             return res.status(400).json({
                 error: "Username must container at least 1 character"
             });
-        } else if (Username.length > 50) {
+        } else if (username.length > 50) {
             return res.status(400).json({
                 error: "Username must be less than 50 characters"
             });

@@ -12,50 +12,54 @@
     <link href="../styles/style.css" rel="stylesheet">
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
     <title>Strive</title>
 </head>
 
 <body>
     <div class='container'>
-
-
+        
+        
         <div class='card-panel blue-grey darken-1 col s12'>
             <section class='center-align'>
                 <h1>
                     <i class="medium material-icons">person_pin</i> Strive</h1>
-                <h4>Comptetition App</h4>
-                <br>
-                </head>
-
-                <body>
-
-                    <form action="action_page.php">
+                    <h4>Comptetition App</h4>
+                    <br>
+                
+                </section>
+                    
+                    <form >
                         <div class="container">
                             <h1>Sign Up</h1>
+                            
                             <p>Please fill in this form to create an account.</p>
                             <hr>
-
-                            <input type="text" placeholder="First and Last Name" name="email" required>
-                            <input type="text" placeholder="Enter Email" name="email" required>
-                            <input type="password" placeholder="Enter Password" name="psw" required>
-                            <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
-
+                            
+                            <input type="text" placeholder="First and Last Name" name="name" id="name" required>
+                            <input type="text" placeholder="Enter Email" name="email" id="email" required>
+                            <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+                            <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" required>
+                            
                             <div class="clearfix">
-
-                                <a href="/">
-                                    <button type="button" class="cancelbtn">Cancel</button>
-                                    <button type="submit" class="signupbtn">Sign Up</button>
-
+                                
+                                <button type="button" class="cancelbtn">Cancel</button>
+                                <button type="submit" class="signupbtn" id="signupbtn">Sign Up</button>
+                                
                             </div>
                         </div>
                     </form>
                     <div>
-                        <form action="action_page.php"></form>
+                        <form>
                         <a href="/">
                             <button type="submit" class "homebtn">Home</button>
-                            </form>
+                            </a>
+                        </form>
                     </div>
+                </div>
+</body>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="/js/user.js"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+</html>
