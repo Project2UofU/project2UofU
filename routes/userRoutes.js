@@ -7,22 +7,28 @@ module.exports = function (app) {
 
     app.post("/create", function (req, res) {
         var body = req.body;
-        var name = body.name.trim();
+        var userName = body.userName.trim();
         var password = body.password; // TODO: Validate and Encrypt the password
-        if (!name) {
-            return res.status(400).json({ error: "Missing name" });
+        if (!userName) {
+            return res.status(400).json({
+                error: "Missing username"
+            });
         } else if (name.length == 0) {
-            return res.status(400).json({ error: "Name must container at least 1 character" });
+            return res.status(400).json({
+                error: "Name must container at least 1 character"
+            });
         } else if (name.length > 50) {
-            return res.status(400).json({ error: "Name must be less than 50 characters" });
+            return res.status(400).json({
+                error: "Name must be less than 50 characters"
+            });
         }
 
         var params = {
-            name: name,
+            userName: userName,
             password: password
         }
         db.User.create(params).then(function (dbUser) {
-            res.json(dbUser);
+            res.json(dbUser.get());
         }).catch(function (err) {
             res.send(err);
         });
@@ -44,14 +50,44 @@ module.exports = function (app) {
     // Description: Get Competitions with the participant count
     // Parameters: 
     // - ownerId: String
+    app.get("/login", function (req, res) {
+        var userName = req.query.username;
+        if (!userName) {
+            return res.status(400).json({
+                error: "Missing username"
+            });
+        }
+        var password = req.query.password;
+        if (!password) {
+            return res.status(400).json({
+                error: "Missing password"
+            });
+        }
+        db.User.findOne({
+            where: {
+                userName: userName,
+                password: password
+            }
+        }).then(function (dbUser) {
+            res.json(dbUser.get());
+
+        }).catch(function (err) {
+            res.send(err);
+        });
+    });
+
     app.get("/competitions", function (req, res) {
-        var ownerId = req.query.ownerId
+        var ownerId = req.query.ownerId;
         if (!ownerId) {
-            return res.status(400).json({ error: "Missing ownerId" });
+            return res.status(400).json({
+                error: "Missing ownerId"
+            });
         }
 
         return db.Competition.findAll({
-            where: { ownerId: ownerId },
+            where: {
+                ownerId: ownerId
+            },
             attributes: ['id', 'title', 'createdAt', 'updatedAt', [sequelize.fn('COUNT', sequelize.col('competitions.id')), 'participantCount']],
             include: [{
                 as: "competitions",
@@ -83,7 +119,9 @@ module.exports = function (app) {
                 competitionsArray.push(competitionObject);
             })
 
-            res.json({ "competitions": competitionsArray });
+            res.json({
+                "competitions": competitionsArray
+            });
         }).catch(function (err) {
             res.send(err);
         });
