@@ -1,142 +1,104 @@
-$(document).ready(function() {
-  /* global moment */
-  
-  // blogContainer holds all of our competitions
-  var competitionContainer = $(".competition-container");
-  var competitionCategorySelect = $("#category");
-  // Click events for the edit and delete buttons
-  $(document).on("click", "button.delete", handleCompetitionDelete);
-  $(document).on("click", "button.edit", handleCompetitionEdit);
-  // Variable to hold our competitions
-  var competitions;
-  
-  // The code below handles the case where we want to get competitions for a specific user
-  // Looks for a query param in the url for user_id
-  var url = window.location.search;
-  var userId;
-  if (url.indexOf("?user_id=") !== -1) {
-    userId = url.split("=")[1];
-    getCompetitions(userId);
-  }
-  // If there's no userId we just get all competitions as usual
-  else {
-    getCompetitions();
-  }
-  
-  
-  // This function grabs posts from the database and updates the view
-  function getCompetitions(user) {
-    userId = user || "";
-    if (userId) {
-      userId = "/?user_id=" + userId;
-    }
-    $.get("/api/competitions" + userId, function(data) {
-      console.log("Competitions", data);
-      competitions = data;
-      if (!competitions || !competitions.length) {
-        displayEmpty(user);
-      }
-      else {
-        initializeRows();
-      }
+console.log("working")
+// Get references to page elements
+var usernameInput = $("#name");
+// var emailInput = $("#email");
+var pswInput = $("#psw");
+// var pswRepeatInput = $("#psw-repeat");
+var signupBtn = $("#signupbtn");
+var $exampleList = $("#example-list");
+
+// The API object contains methods for each kind of request we'll make
+var API = {
+  saveUser: function(newComp) {
+    return $.ajax({
+      type: "POST",
+      url: "api/competition/create",
+      data: newComp
     });
-  }
-  
-  // This function does an API call to delete competitions
-  function deleteCompetition(id) {
-    $.ajax({
-      method: "DELETE",
-      url: "/api/competitions/" + id
-    })
-      .then(function() {
-        getCompetitions(competitionCategorySelect.val());
-      });
-  }
-  
-  // InitializeRows handles appending all of our constructed competition HTML inside competitionContainer
-  function initializeRows() {
-    competitionContainer.empty();
-    var competitionsToAdd = [];
-    for (var i = 0; i < competitions.length; i++) {
-      competitionsToAdd.push(createNewRow(competitions[i]));
-    }
-    competitionContainer.append(competitionsToAdd);
-  }
-  
-  // This function constructs a post's HTML
-  function createNewRow(competition) {
-    var formattedDate = new Date(competition.createdAt);
-    formattedDate = moment(formattedDate).format("MMMM Do YYYY, h:mm:ss a");
-    var newCompetitionCard = $("<div>");
-    newCompetitionCard.addClass("card");
-    var newCompetitionCardHeading = $("<div>");
-    newCompetitionCardHeading.addClass("card-header");
-    var deleteBtn = $("<button>");
-    deleteBtn.text("x");
-    deleteBtn.addClass("delete btn btn-danger");
-    var editBtn = $("<button>");
-    editBtn.text("EDIT");
-    editBtn.addClass("edit btn btn-info");
-    var newCompetitionTitle = $("<h2>");
-    var newCompetitionDate = $("<small>");
-    var newCompetitionUser = $("<h5>");
-    newCompetitionUser.text("Created by: " + competition.User.name);
-    newCompetitionUser.css({
-      float: "right",
-      color: "blue",
-      "margin-top":
-        "-10px"
-    });
-    var newCompetitionCardBody = $("<div>");
-    newCompetitionCardBody.addClass("card-body");
-    var newCompetitionBody = $("<p>");
-    newCompetitionTitle.text(competition.title + " ");
-    newCompetitionBody.text(competition.body);
-    newCompetitionDate.text(formattedDate);
-    newCompetitionTitle.append(newCompetitionDate);
-    newCompetitionCardHeading.append(deleteBtn);
-    newCompetitionCardHeading.append(editBtn);
-    newCompetitionCardHeading.append(newCompetitionTitle);
-    newCompetitionCardHeading.append(newCompetitionUser);
-    newCompetitionCardBody.append(newCompetitionBody);
-    newCompetitionCard.append(newCompetitionCardHeading);
-    newCompetitionCard.append(newCompetitionCardBody);
-    newCompetitionCard.data("competition", competition);
-    return newCompetitonCard;
-  }
-  
-  // This function figures out which competition we want to delete and then calls deleteCompetition
-  function handleCompetitionDelete() {
-    var currentCompetition = $(this)
-      .parent()
-      .parent()
-      .data("competition");
-    deleteCompetition(currentCompetition.id);
-  }
-  
-  // This function figures out which competition we want to edit and takes it to the appropriate url
-  function handleCompetitionEdit() {
-    var currentCompetition = $(this)
-      .parent()
-      .parent()
-      .data("competition");
-    window.location.href = "/ccf?competition_id=" + currentCompetition.id;
-  }
-  
-  // This function displays a message when there are no competitions
-  function displayEmpty(id) {
-    var query = window.location.search;
-    var partial = "";
-    if (id) {
-      partial = " for User #" + id;
-    }
-    competitionContainer.empty();
-    var messageH2 = $("<h2>");
-    messageH2.css({ "text-align": "center", "margin-top": "50px" });
-    messageH2.html("No posts yet" + partial + ", navigate <a href='/ccf" + query +
-      "'>here</a> in order to get started.");
-    competitionContainer.append(messageH2);
-  }
-  
-});
-  
+  },
+  // getUsers: function() {
+  //   return $.ajax({
+  //     url: "api/user",
+  //     type: "GET"
+  //   });
+  // },
+  // deleteUser: function(id) {
+  //   return $.ajax({
+  //     url: "api/user/" + id,
+  //     type: "DELETE"
+  //   });
+  // }
+};
+
+// refreshExamples gets new examples from the db and repopulates the list
+// function refreshUsers() {
+//   API.getUsers().then(function(data) {
+//     var users = data.map(function(user) {
+//       var $a = $("<a>")
+//         .text(user.name)
+//         .attr("href", "/user/" + user.id);
+
+//       var $li = $("<li>")
+//         .attr({
+//           class: "list-group-item",
+//           "data-id": user.id
+//         })
+//         .append($a);
+
+//       var $button = $("<button>")
+//         .addClass("btn btn-danger float-right delete")
+//         .text("ｘ");
+
+//       $li.append($button);
+
+//       return $li;
+//     });
+
+//     userList.empty();
+//     userList.append(users);
+//   });
+// };
+
+// handleFormSubmit is called whenever we submit a new example
+// Save the new example to the db and refresh the list
+function handleFormSubmit(event) {
+  event.preventDefault();
+
+  var newComp = {
+    username: usernameInput.val().trim(),
+    // email: emailInput.val().trim(),
+    password: pswInput.val().trim(),
+    // pswRepeat: pswRepeatInput.val().trim()
+  };
+console.log(newComp)
+  // if (!(newComp.name && newComp.email && newComp.password && newComp.pswRepeat)) {
+  //   alert("You must complete all fields!");
+  //   return;
+  // }
+
+  API.saveUser(newComp)
+  // .then(function() {
+  //   refreshUsers();
+  // });
+
+  usernameInput.val("");
+  // emailInput.val("");
+  pswInput.val("");
+  // pswRepeatInput.val("");
+};
+
+// handleDeleteBtnClick is called when an example's delete button is clicked
+// Remove the example from the db and refresh the list
+// function handleDeleteBtnClick() {
+//   var idToDelete = $(this)
+//     .parent()
+//     .attr("data-id");
+
+//   API.deleteExample(idToDelete).then(function() {
+//     refreshExamples();
+//   });
+// };
+
+// Add event listeners to the submit and delete buttons
+signupBtn.on("click", handleFormSubmit);
+// $exampleList.on("click", ".delete", handleDeleteBtnClick);
