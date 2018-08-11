@@ -6,17 +6,21 @@ module.exports = function (sequelize, DataTypes) {
             autoIncrement: true
         },
         value: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {
                 len: [1]
             }
+        },
+        date: {
+            type: DataTypes.DATE,
+            allowNull: false
         }
     });
 
     CompetitionEntry.associate = function (models) {
-        CompetitionEntry.belongsTo(models.Competition, { as: 'competition', foreignKey: { foreignKey: "competitionId", allowNull: false } });
-        CompetitionEntry.belongsTo(models.User, { as: 'user', foreignKey: { foreignKey: "userId", allowNull: false } });
+        CompetitionEntry.belongsTo(models.Competition, { as: "competition", foreignKey: { foreignKey: "competitionId", allowNull: false } });
+        CompetitionEntry.belongsTo(models.User, { as: "user", foreignKey: { foreignKey: "userId", allowNull: false } });
     };
 
     return CompetitionEntry;
