@@ -113,12 +113,27 @@ const seed = () => {
             db.UserCompetition.create({ competitionId: competition.id, participantId: michael.id }),
             db.UserCompetition.create({ competitionId: competition.id, participantId: thomas.id }),
             db.UserCompetition.create({ competitionId: competition.id, participantId: daniel.id }),
-            db.CompetitionEntry.create({ value: "351", date: moment().toDate(), competitionId: competition.id, userId: michael.id }),
-            db.CompetitionEntry.create({ value: "741", date: moment().add(400, 'seconds').toDate(), competitionId: competition.id, userId: thomas.id }),
-            db.CompetitionEntry.create({ value: "61", date: moment().add(3910, 'seconds').toDate(), competitionId: competition.id, userId: michael.id }),
-            db.CompetitionEntry.create({ value: "124", date: moment().add(8350, 'seconds').toDate(), competitionId: competition.id, userId: daniel.id }),
-            db.CompetitionEntry.create({ value: "714", date: moment().add(10200, 'seconds').toDate(), competitionId: competition.id, userId: daniel.id }),
-            db.CompetitionEntry.create({ value: "238", date: moment().add(20020, 'seconds').toDate(), competitionId: competition.id, userId: thomas.id })
+            db.CompetitionEntry.create({ value: 164, date: moment().toDate(), competitionId: competition.id, userId: michael.id }),
+            db.CompetitionEntry.create({ value: 167, date: moment().add(1, 'days').toDate(), competitionId: competition.id, userId: michael.id }),
+            db.CompetitionEntry.create({ value: 165, date: moment().add(2, 'days').toDate(), competitionId: competition.id, userId: michael.id }),
+            db.CompetitionEntry.create({ value: 163, date: moment().add(3, 'days').toDate(), competitionId: competition.id, userId: michael.id }),
+            db.CompetitionEntry.create({ value: 161, date: moment().add(4, 'days').toDate(), competitionId: competition.id, userId: michael.id }),
+            db.CompetitionEntry.create({ value: 159, date: moment().add(5, 'days').toDate(), competitionId: competition.id, userId: michael.id }),
+            db.CompetitionEntry.create({ value: 155, date: moment().add(6, 'days').toDate(), competitionId: competition.id, userId: michael.id }),
+            db.CompetitionEntry.create({ value: 200, date: moment(), competitionId: competition.id, userId: thomas.id }),
+            db.CompetitionEntry.create({ value: 198, date: moment().add(1, 'days').toDate(), competitionId: competition.id, userId: thomas.id }),
+            db.CompetitionEntry.create({ value: 196, date: moment().add(2, 'days').toDate(), competitionId: competition.id, userId: thomas.id }),
+            db.CompetitionEntry.create({ value: 199, date: moment().add(3, 'days').toDate(), competitionId: competition.id, userId: thomas.id }),
+            db.CompetitionEntry.create({ value: 195, date: moment().add(4, 'days').toDate(), competitionId: competition.id, userId: thomas.id }),
+            db.CompetitionEntry.create({ value: 192, date: moment().add(5, 'days').toDate(), competitionId: competition.id, userId: thomas.id }),
+            db.CompetitionEntry.create({ value: 181, date: moment().add(6, 'days').toDate(), competitionId: competition.id, userId: thomas.id }),
+            db.CompetitionEntry.create({ value: 178, date: moment(), competitionId: competition.id, userId: daniel.id }),
+            db.CompetitionEntry.create({ value: 179, date: moment().add(1, 'days').toDate(), competitionId: competition.id, userId: daniel.id }),
+            db.CompetitionEntry.create({ value: 177, date: moment().add(2, 'days').toDate(), competitionId: competition.id, userId: daniel.id }),
+            db.CompetitionEntry.create({ value: 175, date: moment().add(3, 'days').toDate(), competitionId: competition.id, userId: daniel.id }),
+            db.CompetitionEntry.create({ value: 173, date: moment().add(4, 'days').toDate(), competitionId: competition.id, userId: daniel.id }),
+            db.CompetitionEntry.create({ value: 170, date: moment().add(5, 'days').toDate(), competitionId: competition.id, userId: daniel.id }),
+            db.CompetitionEntry.create({ value: 168, date: moment().add(6, 'days').toDate(), competitionId: competition.id, userId: daniel.id })
           ])
         })
     }).catch(function (err) {
@@ -143,7 +158,5 @@ db.sequelize.sync(syncOptions).then(function () {
     seed();
   }
 });
-
-
 
 module.exports = app;

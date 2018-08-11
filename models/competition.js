@@ -14,6 +14,14 @@ module.exports = function (sequelize, DataTypes) {
             primaryKey: true,
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
+        },
+        startDate: {
+            type: DataTypes.DATE,
+            allowNull: false
+        },
+        endDate: {
+            type: DataTypes.DATE,
+            allowNull: false
         }
     });
 
