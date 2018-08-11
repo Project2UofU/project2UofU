@@ -33,23 +33,7 @@ module.exports = function (app) {
             res.send(err);
         });
     });
-
-    // Example:
-    // {
-    //     "competitions": [
-    //       {
-    //         "title": "Weight Loss",
-    //         "id": "49d5bccc-fd94-4f76-a8c5-8d0afe756618",
-    //         "participantCount": 3
-    //       }
-    //     ]
-    //   }
-
-    // URL: api/user/competitions
-    // Method: GET
-    // Description: Get Competitions with the participant count
-    // Parameters: 
-    // - ownerId: String
+    
     app.get("/login", function (req, res) {
         var username = req.query.username;
         if (!username) {
@@ -76,6 +60,22 @@ module.exports = function (app) {
         });
     });
 
+    // Example:
+    // {
+    //     "competitions": [
+    //       {
+    //         "title": "Weight Loss",
+    //         "id": "49d5bccc-fd94-4f76-a8c5-8d0afe756618",
+    //         "participantCount": 3
+    //       }
+    //     ]
+    //   }
+
+    // URL: api/user/competitions
+    // Method: GET
+    // Description: Get Competitions with the participant count
+    // Parameters: 
+    // - ownerId: String
     app.get("/competitions", function (req, res) {
         var ownerId = req.query.ownerId;
         if (!ownerId) {
