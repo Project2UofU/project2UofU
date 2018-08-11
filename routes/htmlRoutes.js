@@ -51,7 +51,9 @@ module.exports = function (app, passport) {
       // res.redirect("/");
     }));
 
-  
+    app.get("/competition", function(req, res) {
+      res.sendfile(path.join(publicPath, "competition.html"));
+    });
 
   // app.get('/auth/facebook', passport.authenticate('facebook'));
 

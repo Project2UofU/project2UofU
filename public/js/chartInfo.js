@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    console.log("test");
     var randomNumber = Math.floor((Math.random() * 256) - 1);
 
     function randomColor() {
