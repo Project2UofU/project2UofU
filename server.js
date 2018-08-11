@@ -2,7 +2,6 @@ require("dotenv").config();
 var express = require("express");
 var bodyParser = require("body-parser");
 var passport = require('passport');
-var ejs = require('ejs');
 var FaceBookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 var path = require("path");
@@ -13,6 +12,8 @@ var FACEBOOK_CLIENT_SECRET = config.facebook.client_secret;
 var GOOGLE_CLIENT_ID = config.google.client_id;
 var GOOGLE_CLIENT_SECRET = config.google.client_secret;
 var db = require("./models");
+var moment = require("moment");
+
 
 
 var app = express();
@@ -31,8 +32,9 @@ passport.use(new FaceBookStrategy({
   callbackURL: "http://localhost:8080/"
 },
 function(accessToken, refreshToken, profile, cb) {
-  User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+  db.User.findOrCreate({ facebookId: profile.id }, function (err, user) {
     console.log(user);
+    
     return cb(err, user);
   });
 }
@@ -41,12 +43,12 @@ function(accessToken, refreshToken, profile, cb) {
 passport.use(new GoogleStrategy({
   clientID: GOOGLE_CLIENT_ID,
   clientSecret: GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:8080/"
+  callbackURL: "http://localhost:8080/auth/google/callback"
 },
 function(token, tokenSecret, profile, done) {
-  User.findOrCreate({ googleId: profile.id }, function (err, user) {
+  db.User.findOrCreate({ name: "Steve", googleId: profile.id }, function (err, user) {
     console.log(user);
-    return cb(err, user);
+    return done(err, user);
   });
 }
 ));
@@ -94,9 +96,9 @@ if (process.env.NODE_ENV === "test") {
 
 const seed = () => {
   return Promise.all([
-    db.User.create({ name: "Michael", password: "blue" }),
-    db.User.create({ name: "Thomas", password: "red" }),
-    db.User.create({ name: "Daniel", password: "yellow" }),
+    db.User.create({ username: "Michael", password: "blue" }),
+    db.User.create({ username: "Thomas", password: "red" }),
+    db.User.create({ username: "Daniel", password: "yellow" }),
   ])
     .then(result => {
       const michael = result[0];
@@ -111,12 +113,12 @@ const seed = () => {
             db.UserCompetition.create({ competitionId: competition.id, participantId: michael.id }),
             db.UserCompetition.create({ competitionId: competition.id, participantId: thomas.id }),
             db.UserCompetition.create({ competitionId: competition.id, participantId: daniel.id }),
-            db.CompetitionEntry.create({ value: "351", competitionId: competition.id, userId: michael.id }),
-            db.CompetitionEntry.create({ value: "741", competitionId: competition.id, userId: thomas.id }),
-            db.CompetitionEntry.create({ value: "61", competitionId: competition.id, userId: michael.id }),
-            db.CompetitionEntry.create({ value: "124", competitionId: competition.id, userId: daniel.id }),
-            db.CompetitionEntry.create({ value: "714", competitionId: competition.id, userId: daniel.id }),
-            db.CompetitionEntry.create({ value: "238", competitionId: competition.id, userId: thomas.id })
+            db.CompetitionEntry.create({ value: "351", date: moment().toDate(), competitionId: competition.id, userId: michael.id }),
+            db.CompetitionEntry.create({ value: "741", date: moment().add(400, 'seconds').toDate(), competitionId: competition.id, userId: thomas.id }),
+            db.CompetitionEntry.create({ value: "61", date: moment().add(3910, 'seconds').toDate(), competitionId: competition.id, userId: michael.id }),
+            db.CompetitionEntry.create({ value: "124", date: moment().add(8350, 'seconds').toDate(), competitionId: competition.id, userId: daniel.id }),
+            db.CompetitionEntry.create({ value: "714", date: moment().add(10200, 'seconds').toDate(), competitionId: competition.id, userId: daniel.id }),
+            db.CompetitionEntry.create({ value: "238", date: moment().add(20020, 'seconds').toDate(), competitionId: competition.id, userId: thomas.id })
           ])
         })
     }).catch(function (err) {

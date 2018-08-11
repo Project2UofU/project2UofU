@@ -1,9 +1,9 @@
 console.log("working")
 // Get references to page elements
-var nameInput = $("#name");
-var emailInput = $("#email");
+var usernameInput = $("#name");
+// var emailInput = $("#email");
 var pswInput = $("#psw");
-var pswRepeatInput = $("#psw-repeat");
+// var pswRepeatInput = $("#psw-repeat");
 var signupBtn = $("#signupbtn");
 var $exampleList = $("#example-list");
 
@@ -16,48 +16,48 @@ var API = {
       data: newUser
     });
   },
-  getUsers: function() {
-    return $.ajax({
-      url: "api/user",
-      type: "GET"
-    });
-  },
-  deleteUser: function(id) {
-    return $.ajax({
-      url: "api/user/" + id,
-      type: "DELETE"
-    });
-  }
+  // getUsers: function() {
+  //   return $.ajax({
+  //     url: "api/user",
+  //     type: "GET"
+  //   });
+  // },
+  // deleteUser: function(id) {
+  //   return $.ajax({
+  //     url: "api/user/" + id,
+  //     type: "DELETE"
+  //   });
+  // }
 };
 
 // refreshExamples gets new examples from the db and repopulates the list
-function refreshUsers() {
-  API.getUsers().then(function(data) {
-    var users = data.map(function(user) {
-      var $a = $("<a>")
-        .text(user.name)
-        .attr("href", "/user/" + user.id);
+// function refreshUsers() {
+//   API.getUsers().then(function(data) {
+//     var users = data.map(function(user) {
+//       var $a = $("<a>")
+//         .text(user.name)
+//         .attr("href", "/user/" + user.id);
 
-      var $li = $("<li>")
-        .attr({
-          class: "list-group-item",
-          "data-id": user.id
-        })
-        .append($a);
+//       var $li = $("<li>")
+//         .attr({
+//           class: "list-group-item",
+//           "data-id": user.id
+//         })
+//         .append($a);
 
-      var $button = $("<button>")
-        .addClass("btn btn-danger float-right delete")
-        .text("ｘ");
+//       var $button = $("<button>")
+//         .addClass("btn btn-danger float-right delete")
+//         .text("ｘ");
 
-      $li.append($button);
+//       $li.append($button);
 
-      return $li;
-    });
+//       return $li;
+//     });
 
-    userList.empty();
-    userList.append(users);
-  });
-};
+//     userList.empty();
+//     userList.append(users);
+//   });
+// };
 
 // handleFormSubmit is called whenever we submit a new example
 // Save the new example to the db and refresh the list
@@ -65,10 +65,10 @@ function handleFormSubmit(event) {
   event.preventDefault();
 
   var newUser = {
-    name: nameInput.val().trim(),
-    email: emailInput.val().trim(),
+    username: usernameInput.val().trim(),
+    // email: emailInput.val().trim(),
     password: pswInput.val().trim(),
-    pswRepeat: pswRepeatInput.val().trim()
+    // pswRepeat: pswRepeatInput.val().trim()
   };
 console.log(newUser)
   // if (!(newUser.name && newUser.email && newUser.password && newUser.pswRepeat)) {
@@ -76,28 +76,29 @@ console.log(newUser)
   //   return;
   // }
 
-  API.saveUser(newUser).then(function() {
-    refreshUsers();
-  });
+  API.saveUser(newUser)
+  // .then(function() {
+  //   refreshUsers();
+  // });
 
-  nameInput.val("");
-  emailInput.val("");
+  usernameInput.val("");
+  // emailInput.val("");
   pswInput.val("");
-  pswRepeatInput.val("");
+  // pswRepeatInput.val("");
 };
 
 // handleDeleteBtnClick is called when an example's delete button is clicked
 // Remove the example from the db and refresh the list
-function handleDeleteBtnClick() {
-  var idToDelete = $(this)
-    .parent()
-    .attr("data-id");
+// function handleDeleteBtnClick() {
+//   var idToDelete = $(this)
+//     .parent()
+//     .attr("data-id");
 
-  API.deleteExample(idToDelete).then(function() {
-    refreshExamples();
-  });
-};
+//   API.deleteExample(idToDelete).then(function() {
+//     refreshExamples();
+//   });
+// };
 
 // Add event listeners to the submit and delete buttons
 signupBtn.on("click", handleFormSubmit);
-$exampleList.on("click", ".delete", handleDeleteBtnClick);
+// $exampleList.on("click", ".delete", handleDeleteBtnClick);
