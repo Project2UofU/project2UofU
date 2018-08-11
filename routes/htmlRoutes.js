@@ -8,7 +8,7 @@ module.exports = function (app, passport) {
     res.sendFile(path.join(publicPath, "index.html"));
   });
 
-  
+
   app.get('/login',
     function (req, res) {
       res.render('login');
@@ -45,13 +45,13 @@ module.exports = function (app, passport) {
 
 
   app.get("/auth/google/callback",
-    passport.authenticate("google", 
-    function (err, profile, info) {
-      console.log("PROFILE!!!: " + profile);
-      // res.redirect("/");
-    }));
+    passport.authenticate("google",
+      function (err, profile, info) {
+        console.log("PROFILE!!!: " + profile);
+        // res.redirect("/");
+      }));
 
-  
+
 
   // app.get('/auth/facebook', passport.authenticate('facebook'));
 
