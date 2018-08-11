@@ -63,4 +63,9 @@ module.exports = function (app, passport) {
   app.get("/signup", function (req, res) {
     res.sendFile(path.join(publicPath, "signup.html"));
   });
+
+  app.get("/user/competitions", function (req, res) {
+    console.log("route hit =================");
+    res.sendFile(path.join(publicPath, "competition.html"));
+  })
 };
