@@ -31,8 +31,9 @@ passport.use(new FaceBookStrategy({
   callbackURL: "http://localhost:8080/"
 },
 function(accessToken, refreshToken, profile, cb) {
-  User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+  db.User.findOrCreate({ facebookId: profile.id }, function (err, user) {
     console.log(user);
+    
     return cb(err, user);
   });
 }
@@ -41,12 +42,12 @@ function(accessToken, refreshToken, profile, cb) {
 passport.use(new GoogleStrategy({
   clientID: GOOGLE_CLIENT_ID,
   clientSecret: GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:8080/"
+  callbackURL: "http://localhost:8080/auth/google/callback"
 },
 function(token, tokenSecret, profile, done) {
-  User.findOrCreate({ googleId: profile.id }, function (err, user) {
+  db.User.findOrCreate({ name: "Steve", googleId: profile.id }, function (err, user) {
     console.log(user);
-    return cb(err, user);
+    return done(err, user);
   });
 }
 ));
@@ -94,9 +95,9 @@ if (process.env.NODE_ENV === "test") {
 
 const seed = () => {
   return Promise.all([
-    db.User.create({ name: "Michael", password: "blue" }),
-    db.User.create({ name: "Thomas", password: "red" }),
-    db.User.create({ name: "Daniel", password: "yellow" }),
+    db.User.create({ userName: "Michael", password: "blue" }),
+    db.User.create({ userName: "Thomas", password: "red" }),
+    db.User.create({ userName: "Daniel", password: "yellow" }),
   ])
     .then(result => {
       const michael = result[0];
