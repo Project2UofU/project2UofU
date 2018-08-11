@@ -28,13 +28,14 @@ module.exports = function (app) {
             password: password
         }
         db.User.create(params).then(function (dbUser) {
-            res.json(dbUser.get());
+            res.redirect("http://localhost:8080/user/competitions");
         }).catch(function (err) {
             res.send(err);
         });
     });
     
     app.get("/login", function (req, res) {
+        console.log("\r\r hit route \r\r")
         var username = req.query.username;
         if (!username) {
             return res.status(400).json({
@@ -53,7 +54,15 @@ module.exports = function (app) {
                 password: password
             }
         }).then(function (dbUser) {
-            res.json(dbUser.get());
+            if (!dbUser) {
+                return res.status(400).json({
+                    error: "No user found with the given username/password"
+                });
+            }
+            console.log("success")
+            res.status(200).json({
+                message: "Success"
+            });
 
         }).catch(function (err) {
             res.send(err);
