@@ -43,27 +43,55 @@ module.exports = function (app) {
 
     // Example:
     // {
-    //     "competitions": [
-    //       {
+    //     "competition": {
     //         "title": "Weight Loss",
-    //         "id": "f4c7300f-edfd-4da0-a15d-6e120595d18e",
+    //         "id": "d4c39b3f-c644-4c51-a184-3826766793c4",
     //         "participants": [
-    //           {
-    //             "name": "Michael",
-    //             "id": "2bbd7a0d-7d93-417e-a888-7245b582c483"
-    //           },
-    //           {
-    //             "name": "Thomas",
-    //             "id": "a46b948c-3b5f-4703-afcc-352f4f859398"
-    //           },
-    //           {
-    //             "name": "Daniel",
-    //             "id": "bc83a0a6-3db4-41ec-84c0-c0433a01b1cf"
-    //           }
+    //             {
+    //                 "name": "Michael",
+    //                 "id": "fdec64f2-727b-440a-9aa5-5f4c71185cca",
+    //                 "entries": [
+    //                     {
+    //                         "date": "2018-08-11T16:30:30.000Z",
+    //                         "value": 351
+    //                     },
+    //                     {
+    //                         "date": "2018-08-11T17:35:40.000Z",
+    //                         "value": 61
+    //                     }
+    //                 ]
+    //             },
+    //             {
+    //                 "name": "Thomas",
+    //                 "id": "1760c27d-d2a2-4923-9c8c-c8fdc35b027f",
+    //                 "entries": [
+    //                     {
+    //                         "date": "2018-08-11T16:37:10.000Z",
+    //                         "value": 741
+    //                     },
+    //                     {
+    //                         "date": "2018-08-11T22:04:10.000Z",
+    //                         "value": 238
+    //                     }
+    //                 ]
+    //             },
+    //             {
+    //                 "name": "Daniel",
+    //                 "id": "50f69310-0bce-40b2-bfe5-501c455b1bae",
+    //                 "entries": [
+    //                     {
+    //                         "date": "2018-08-11T18:49:40.000Z",
+    //                         "value": 124
+    //                     },
+    //                     {
+    //                         "date": "2018-08-11T19:20:30.000Z",
+    //                         "value": 714
+    //                     }
+    //                 ]
+    //             }
     //         ]
-    //       }
-    //     ]
-    //   }
+    //     }
+    // }
 
     // URL: api/competition/[id]
     // Method: GET
@@ -74,19 +102,25 @@ module.exports = function (app) {
             return res.status(400).json({ error: "Missing competition id" });
         }
 
+        console.log("Cometition: " + id);
         return db.Competition.findOne({
             where: { id: id },
             attributes: ['id', 'title', 'createdAt', 'updatedAt'],
-            include: [{
+            include: {
                 as: "competitions",
                 model: db.UserCompetition,
                 attributes: ["id"],
-                include: {
+                include: [{
                     model: db.User,
                     as: "participant",
-                    attributes: ["name", "id"],
-                }
-            }]
+                    attributes: ["username", "id"],
+                    include: {
+                        as: "entries",
+                        model: db.CompetitionEntry,
+                        attributes: ["value", "date"]
+                    }
+                }]
+            }
         }).then(function (competition) {
             var competition = competition.get();
             var competitionObject = {
@@ -102,8 +136,20 @@ module.exports = function (app) {
             competition.competitions.forEach(userCompetition => {
                 var userCompetition = userCompetition.get();
                 var user = {
-                    name: userCompetition.participant.name,
-                    id: userCompetition.participant.id
+                    username: userCompetition.participant.username,
+                    id: userCompetition.participant.id,
+                    entries: []
+                }
+
+                var entries = userCompetition.participant.entries
+                if (entries) {
+                    userCompetition.participant.entries.forEach(entry => {
+                        var entryObject = {
+                            date: entry.date,
+                            value: entry.value
+                        };
+                        user.entries.push(entryObject);
+                    })
                 }
 
                 participants.push(user);
@@ -134,9 +180,13 @@ module.exports = function (app) {
     });
 
     app.post("/addParticipant", function (req, res) {
-        // TODO: Add validation checks
         var participantId = req.body.participantId;
         var competitionId = req.body.competitionId;
+        if (!req.body.participantId) {
+            return res.status(400).json({ error: "Missing participantId" });
+        } else if (!req.body.competitionId) {
+            return res.status(400).json({ error: "Missing competitionId" });
+        }
 
         var params = {
             participantId: participantId,
@@ -147,26 +197,6 @@ module.exports = function (app) {
             res.json(dbUserCompetition);
         }).catch(function (err) {
             res.send(err);
-        });
-
-    });
-
-    app.get("/entries/:id", function (req, res) {
-        var id = req.params.id
-        if (!id) {
-            return res.status(400).json({ error: "Missing id" });
-        }
-
-        db.CompetitionEntry.findAll({
-            where: { competitionId: id },
-            attributes: ['value'],
-            include: [{
-                model: db.User,
-                as: 'user',
-                attributes: ['id', 'name', 'createdAt']
-            }]
-        }).then(function (dbCompetitionEntries) {
-            res.json(dbCompetitionEntries);
         });
 
     });
