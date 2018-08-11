@@ -14,8 +14,6 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
-   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
     <title>Strive</title>
 </head>
@@ -33,24 +31,37 @@
 
                 </head>
 
+            </section>
 
-                <div class='card-panel blue-grey darken-1 col s12'>
-                    <section class='center-align'>
-                        <h5>
-                            <i class="medium material-icons"></i> Competition List</h5>
-                        <div class="row">
-                            <div class="col-md-12 competition-container" style="width: 50%" style="height: 50%">
-                                    <canvas id="myChart" width="200" height="200" style="text-align: center"></canvas>
+            <div class='card-panel blue-grey darken-1 col s12'>
+                <section class='center-align'>
+                    <h5>
+                        <i class="medium material-icons"></i> Competition Entry</h5>
+
+                    <br>
+
+                    <form>
+                        <div class="container">
+                            <p>Please fill in this form to create a competition.</p>
+
+
+                            <input type="text" placeholder="Competition Entry Name" name="title" required>
+                            <div class="clearfix">
+
+                                <a href="/">
+                                    <button type="button" class="cancelbtn">Cancel</button>
+                                    <button type="submit" class="signupbtn">Submit</button>
+
                             </div>
                         </div>
-                    </section>
-                    <br>
-                </div>
+                    </form>
+
+                </section>
+
+            </div>
         </div>
     </div>
-    <script src="./../js/chartInfo.js"></script>
+
 </body>
-
-
 
 </html>
