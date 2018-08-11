@@ -1,3 +1,4 @@
+console.log("working")
 // Get references to page elements
 var nameInput = $("#name");
 var emailInput = $("#email");
@@ -10,12 +11,9 @@ var $exampleList = $("#example-list");
 var API = {
   saveUser: function(newUser) {
     return $.ajax({
-      headers: {
-        "Content-Type": "application/json"
-      },
       type: "POST",
       url: "api/user/create",
-      data: JSON.stringify(newUser)
+      data: newUser
     });
   },
   getUsers: function() {
@@ -33,7 +31,7 @@ var API = {
 };
 
 // refreshExamples gets new examples from the db and repopulates the list
-var refreshUsers = function() {
+function refreshUsers() {
   API.getUsers().then(function(data) {
     var users = data.map(function(user) {
       var $a = $("<a>")
@@ -63,7 +61,7 @@ var refreshUsers = function() {
 
 // handleFormSubmit is called whenever we submit a new example
 // Save the new example to the db and refresh the list
-var handleFormSubmit = function(event) {
+function handleFormSubmit(event) {
   event.preventDefault();
 
   var newUser = {
@@ -72,11 +70,11 @@ var handleFormSubmit = function(event) {
     password: pswInput.val().trim(),
     pswRepeat: pswRepeatInput.val().trim()
   };
-
-  if (!(newUser.name && newUser.email && newUser.password && newUser.pswRepeat)) {
-    alert("You must complete all fields!");
-    return;
-  }
+console.log(newUser)
+  // if (!(newUser.name && newUser.email && newUser.password && newUser.pswRepeat)) {
+  //   alert("You must complete all fields!");
+  //   return;
+  // }
 
   API.saveUser(newUser).then(function() {
     refreshUsers();
@@ -90,7 +88,7 @@ var handleFormSubmit = function(event) {
 
 // handleDeleteBtnClick is called when an example's delete button is clicked
 // Remove the example from the db and refresh the list
-var handleDeleteBtnClick = function() {
+function handleDeleteBtnClick() {
   var idToDelete = $(this)
     .parent()
     .attr("data-id");

@@ -7,6 +7,7 @@ module.exports = function (app) {
 
     app.post("/create", function (req, res) {
         var body = req.body;
+        console.log(body);
         var name = body.name.trim();
         var password = body.password; // TODO: Validate and Encrypt the password
         if (!name) {
