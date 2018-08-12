@@ -8,7 +8,7 @@ module.exports = function (app, passport) {
     res.sendFile(path.join(publicPath, "index.html"));
   });
 
-  
+
   app.get('/login',
     function (req, res) {
       res.render('login');
@@ -45,11 +45,13 @@ module.exports = function (app, passport) {
 
 
   app.get("/auth/google/callback",
-    passport.authenticate("google", 
-    function (err, profile, info) {
-      console.log("PROFILE!!!: " + profile);
-      // res.redirect("/");
-    }));
+    passport.authenticate("google",
+      function (err, profile, info) {
+        console.log("PROFILE!!!: " + profile);
+        // res.redirect("/");
+      }));
+
+
 
     app.get("/competition", function(req, res) {
       res.sendfile(path.join(publicPath, "competition.html"));
@@ -65,4 +67,9 @@ module.exports = function (app, passport) {
   app.get("/signup", function (req, res) {
     res.sendFile(path.join(publicPath, "signup.html"));
   });
+
+  app.get("/user/competitions", function (req, res) {
+    console.log("route hit =================");
+    res.sendFile(path.join(publicPath, "competition.html"));
+  })
 };

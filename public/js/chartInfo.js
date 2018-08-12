@@ -1,7 +1,7 @@
 $(document).ready(function () {
-    // var competitor = require("./../../models/user");
-    // var competition = require("./../../models/competition");
-    // var randomNumber = Math.floor((Math.random() * 256) - 1);
+
+    var randomNumber = Math.floor((Math.random() * 256) - 1);
+
 
     function randomColorOne() {
         randomNumber1 = Math.floor((Math.random() * 256) - 1);

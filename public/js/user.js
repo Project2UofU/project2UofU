@@ -1,14 +1,18 @@
 console.log("working")
 // Get references to page elements
+
+// Signup elements
 var usernameInput = $("#name");
-// var emailInput = $("#email");
 var pswInput = $("#psw");
-// var pswRepeatInput = $("#psw-repeat");
 var signupBtn = $("#signupbtn");
-var $exampleList = $("#example-list");
+// Login elements
+var unameLogin = $("#uname");
+var upswLogin = $("#upsw");
+var loginBtn = $("#loginbtn");
 
 // The API object contains methods for each kind of request we'll make
 var API = {
+  // Create new user
   saveUser: function(newUser) {
     return $.ajax({
       type: "POST",
@@ -16,12 +20,19 @@ var API = {
       data: newUser
     });
   },
-  // getUsers: function() {
-  //   return $.ajax({
-  //     url: "api/user",
-  //     type: "GET"
-  //   });
-  // },
+  // Login with already created user
+  getUser: function(user) {
+    return $.ajax({
+      url: "api/user/login",
+      type: "GET",
+      data: user,
+      success: function(data, textStatus) {
+        if (data.message) {
+          window.location.href = "/user/competitions"
+        }
+      }
+    });
+  },
   // deleteUser: function(id) {
   //   return $.ajax({
   //     url: "api/user/" + id,
@@ -30,61 +41,36 @@ var API = {
   // }
 };
 
-// refreshExamples gets new examples from the db and repopulates the list
-// function refreshUsers() {
-//   API.getUsers().then(function(data) {
-//     var users = data.map(function(user) {
-//       var $a = $("<a>")
-//         .text(user.name)
-//         .attr("href", "/user/" + user.id);
+// Login function...
+function handleLogin(event) {
+  event.preventDefault();
 
-//       var $li = $("<li>")
-//         .attr({
-//           class: "list-group-item",
-//           "data-id": user.id
-//         })
-//         .append($a);
+  var user = {
+    username: unameLogin.val().trim(),
+    password: upswLogin.val().trim(),
+  };
 
-//       var $button = $("<button>")
-//         .addClass("btn btn-danger float-right delete")
-//         .text("ｘ");
+  API.getUser(user);  
 
-//       $li.append($button);
+  unameLogin.val("");
+  upswLogin.val("");
+};
 
-//       return $li;
-//     });
 
-//     userList.empty();
-//     userList.append(users);
-//   });
-// };
-
-// handleFormSubmit is called whenever we submit a new example
-// Save the new example to the db and refresh the list
+// Signup function...
 function handleFormSubmit(event) {
   event.preventDefault();
 
   var newUser = {
     username: usernameInput.val().trim(),
-    // email: emailInput.val().trim(),
     password: pswInput.val().trim(),
-    // pswRepeat: pswRepeatInput.val().trim()
   };
 console.log(newUser)
-  // if (!(newUser.name && newUser.email && newUser.password && newUser.pswRepeat)) {
-  //   alert("You must complete all fields!");
-  //   return;
-  // }
-
+  
   API.saveUser(newUser)
-  // .then(function() {
-  //   refreshUsers();
-  // });
-
+  
   usernameInput.val("");
-  // emailInput.val("");
   pswInput.val("");
-  // pswRepeatInput.val("");
 };
 
 // handleDeleteBtnClick is called when an example's delete button is clicked
@@ -101,4 +87,5 @@ console.log(newUser)
 
 // Add event listeners to the submit and delete buttons
 signupBtn.on("click", handleFormSubmit);
+loginBtn.on("click", handleLogin)
 // $exampleList.on("click", ".delete", handleDeleteBtnClick);
