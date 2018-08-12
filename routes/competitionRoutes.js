@@ -1,5 +1,6 @@
 var path = require("path");
 var db = require(path.join(__dirname, "../models"));
+var moment = require("moment");
 
 // /api/competition/*
 module.exports = function (app) {
@@ -7,15 +8,23 @@ module.exports = function (app) {
     app.post("/create", function (req, res) {
         var title = req.body.title;
         var ownerId = req.body.ownerId;
+        var startDate = req.body.startDate;
         if (!title) {
             return res.status(400).json({ error: "Missing title" });
         } else if (!ownerId) {
             return res.status(400).json({ error: "Missing ownerId" });
+        } else if (!startDate) {
+            return res.status(400).json({ error: "Missing startDate" });
         }
+
+        startDate = moment(startDate).startOf('day');
+        var endDate = moment(startDate).add(30, 'days').toDate();
 
         var competitionParams = {
             title: title,
-            ownerId: ownerId
+            ownerId: ownerId,
+            startDate: startDate,
+            endDate: endDate
         }
 
         // TODO: Find a better way to do this
@@ -180,23 +189,31 @@ module.exports = function (app) {
     });
 
     app.post("/addParticipant", function (req, res) {
-        var participantId = req.body.participantId;
+        var username = req.body.username;
         var competitionId = req.body.competitionId;
-        if (!req.body.participantId) {
-            return res.status(400).json({ error: "Missing participantId" });
+        if (!req.body.username) {
+            return res.status(400).json({ error: "Missing username" });
         } else if (!req.body.competitionId) {
             return res.status(400).json({ error: "Missing competitionId" });
         }
 
-        var params = {
-            participantId: participantId,
-            competitionId: competitionId
-        }
+        // TODO: Prevent the user from adding a user that's already a participant
 
-        db.UserCompetition.create(params).then(function (dbUserCompetition) {
-            res.json(dbUserCompetition);
+        db.User.findOne({
+            where: { username: username }
+        }).then(function (dbUser) {
+            var params = {
+                participantId: dbUser.id,
+                competitionId: competitionId
+            }
+    
+            db.UserCompetition.create(params).then(function (dbUserCompetition) {
+                res.json(dbUserCompetition);
+            }).catch(function (err) {
+                res.send(err);
+            });
         }).catch(function (err) {
-            res.send(err);
+            res.status(400).json({ error: "Couldn't add participant" });
         });
 
     });

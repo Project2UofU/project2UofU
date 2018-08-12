@@ -15,7 +15,8 @@
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
-   
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
     <title>Strive</title>
 </head>
@@ -38,12 +39,19 @@
                     <section class='center-align'>
                         <h5 id="competition-name"></h5>
                         <div class="row">
-                            <div class="col-md-12 competition-container" >
-                                    <canvas id="myChart" width="100%" height="80%" style="text-align: center; background-color: white"></canvas>
+                            <div class="col-md-12" id="competition-container">
                             </div>
                         </div>
                     </section>
-                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="left">To add a user to the competition write their username and press add.</label>
+                            <input type="text" placeholder="Username to add" name="title" id="username-field" required>
+                        </div>
+                        <div class="col-md-6">
+                            <div type="submit" class="btn waves-effect waves-light light-blue darken-4" id="add-btn">Add</div>
+                        </div>
+                    </div>
                 </div>
         </div>
     </div>

@@ -14,6 +14,7 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
     <title>Strive</title>
 </head>
@@ -37,31 +38,22 @@
                 <section class='center-align'>
                     <h5>
                         <i class="medium material-icons"></i> Competition Entry</h5>
-
                     <br>
-
                     <form>
                         <div class="container">
-                            <p>Please fill in this form to create a competition.</p>
-
-
-                            <input type="text" placeholder="Competition Entry Name" name="title" required>
-                            <div class="clearfix">
-
-                                <a href="/">
-                                    <button type="button" class="cancelbtn">Cancel</button>
-                                    <button type="submit" class="signupbtn">Submit</button>
-
+                            <label class="left">Please fill in this form to create a competition.</label>
+                            <input type="text" placeholder="Competition Entry Name" name="title" id="name-field" required>
+                            <div class="row center">
+                                <div type="button" class="btn-large waves-effect waves-light" id="cancel-btn">Cancel</div>
+                                <div type="submit" class="btn-large waves-effect waves-light" id="signup-btn">Create</div>
                             </div>
                         </div>
                     </form>
-
                 </section>
-
             </div>
         </div>
     </div>
-
+    <script src="../js/competition_entry.js"></script>
 </body>
 
 </html>

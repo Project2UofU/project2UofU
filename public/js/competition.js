@@ -1,10 +1,15 @@
 // The API object contains methods for each kind of request we'll make
 var API = {
-  create: function (newComp) {
+  addUser: function (competitionId, username, cb) {
+    if (!competitionId) { return undefined }
+    if (!username) { return undefined }
     return $.ajax({
       type: "POST",
-      url: "api/competition/create",
-      data: newComp
+      url: "api/competition/addParticipant",
+      data: {
+        competitionId: competitionId,
+        username: username
+      }
     });
   },
 
@@ -29,6 +34,20 @@ $(document).ready(function () {
   if (competitionId) {
     API.getInfo(competitionId, function (competition) {
       console.log("competiton: " + competition)
+      addChartToDivWithData($("#competition-container"), competition);
     });
   }
+
+  $("#add-btn").on('click', function () {
+    var username = $("#username-field").val();
+    console.log(username);
+    var competitionId = localStorage.getItem("competitionId");
+    if (!username || username.length == 0 || !competitionId) { return; }
+
+    API.addUser(competitionId, username).done(function () {
+      window.location.href = window.location.href;
+    }).fail(function () {
+      alert("Failed to add participant");
+    });
+  });
 });
