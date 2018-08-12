@@ -21,6 +21,10 @@ var API = {
 
 $(document).ready(function () {
   var competitionId = localStorage.getItem("competitionId");
+  var competitionName = localStorage.getItem("competitionTitle");
+  if (competitionName) {
+    $("#competition-name").text(competitionName);
+  }
   console.log("ID: " + competitionId);
   if (competitionId) {
     API.getInfo(competitionId, function (competition) {

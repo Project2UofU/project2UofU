@@ -31,18 +31,18 @@ $(document).ready(function () {
 
     function divForCompetition(competition, addPadding) {
         var div = $("<div class='z-depth-1' id='competition'>");
-        div.val(competition.id);
+        div.data("title", competition.title);
+        div.data("id", competition.id);
         if (addPadding) {
             div.css("margin-bottom", "15px");
         }
-
-        localStorage.setItem("competitionId", competition.id);
 
         div.append($("<div>").text("Name: " + competition.title));
         div.append($("<div>").text("Participants: " + competition.participantCount));
 
         $(div).on('click', function () {
-            console.log($(this).val());
+            localStorage.setItem("competitionId", $(this).data("id"));
+            localStorage.setItem("competitionTitle", $(this).data("title"));
             window.location.href = "/competition";
         });
         $(div).hover(

@@ -144,20 +144,7 @@ $(document).ready(function () {
     }
     userLoop();
 
-    // var weightsArray = [];  
-    // function userWeight() {
-    //     for (var i = 0; i < competitors.length; i++) {
-    //         if (participants[i].username == competitors[i]) {
-    //             for (var j = 0; j < participants[i].entries.length; j++) {
-
-    //                 entries = participants[i].entries[j];
-    //                 weightsArray.push(entries.value);
-    //             }
-    //         }
-    //     }
-    // }
-
-    function userWeight() {
+    function userWeights() {
         var userWeights = {};
         for (var i = 0; i < participants.length; i++) {
             var participant = participants[i];
@@ -171,16 +158,8 @@ $(document).ready(function () {
             userWeights[username] = weights;
         }
 
-
-        for (var k = 0; k < competitors.length; k++) {
-            var user = competitors[k];
-            var uniqueWeightArrays = userWeights[user];
-        }
         return userWeights;
     }
-    userWeight();
-    // console.log(userWeight().Michael);
-
 
     var labels = [];
 
@@ -244,7 +223,6 @@ $(document).ready(function () {
     //     return users;
     // }
     function graphUsers() {
-        userWeights();
         var users = [];
         var weights = userWeights();
         for (var i = 0; i < competitors.length; i++) {
