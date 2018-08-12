@@ -15,7 +15,6 @@
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <!-- Compiled and minified JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
-  <script src="/js/user.js"></script>
   <!-- Chart.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
   <title>Strive</title>
@@ -23,8 +22,8 @@
 
 <body>
   <div class='container'>
-    
-    
+
+
     <div class='card-panel blue-grey darken-1 col s12'>
       <section class='center-align'>
         <h1>
@@ -40,14 +39,14 @@
 
 
           </label>
-          <input type="text" placeholder="Enter Username" name="uname" required>
+          <input type="text" placeholder="Enter Username" id="uname" required>
 
           <label for="psw">
 
           </label>
-          <input type="password" placeholder="Enter Password" name="psw" required>
+          <input type="password" placeholder="Enter Password" id="upsw" required>
 
-          <button type="submit">Login</button>
+          <button type="submit" id="loginbtn">Login</button>
 
           </a>
         </form>
@@ -59,6 +58,7 @@
     </section>
   </div>
 
+  <script src="/js/user.js"></script>
 
 </body>
 

@@ -33,7 +33,7 @@ module.exports = function (app) {
             res.send(err);
         });
     });
-    
+
     app.get("/login", function (req, res) {
         console.log("\r\r hit route \r\r")
         var username = req.query.username;
@@ -59,9 +59,12 @@ module.exports = function (app) {
                     error: "No user found with the given username/password"
                 });
             }
-            console.log("success")
+
             res.status(200).json({
-                message: "Success"
+                user: {
+                    username: dbUser.username,
+                    id: dbUser.id
+                }
             });
 
         }).catch(function (err) {
@@ -85,32 +88,52 @@ module.exports = function (app) {
     // Description: Get Competitions with the participant count
     // Parameters: 
     // - ownerId: String
+    // TODO: Update to grab based of participant id and not owner id
     app.get("/competitions", function (req, res) {
-        var ownerId = req.query.ownerId;
-        if (!ownerId) {
+        var userId = req.query.userId;
+        if (!userId) {
             return res.status(400).json({
                 error: "Missing ownerId"
             });
         }
 
-        return db.Competition.findAll({
+
+        // return db.Competition.findAll({
+        //     where: {
+        //         ownerId: ownerId
+        //     },
+        //     attributes: ['id', 'title', 'createdAt', 'updatedAt', [sequelize.fn('COUNT', sequelize.col('competitions.id')), 'participantCount']],
+        //     include: [{
+        //         as: "competitions",
+        //         model: db.UserCompetition,
+        //         attributes: ["id"],
+        //         include: {
+        //             model: db.User,
+        //             as: "participant",
+        //             attributes: ["username", "id"],
+        //         }
+        //     }]
+
+        return db.UserCompetition.findAll({
             where: {
-                ownerId: ownerId
+                participantId: userId
             },
-            attributes: ['id', 'title', 'createdAt', 'updatedAt', [sequelize.fn('COUNT', sequelize.col('competitions.id')), 'participantCount']],
+            attributes: ['participantId', 'competitionId'],
             include: [{
-                as: "competitions",
-                model: db.UserCompetition,
-                attributes: ["id"],
+                as: "competition",
+                model: db.Competition,
+                attributes: ['id', 'title', 'createdAt', 'updatedAt'],
                 include: {
-                    model: db.User,
-                    as: "participant",
-                    attributes: ["username", "id"],
+                    as: "competitions",
+                    model: db.UserCompetition,
+                    attributes: ["id"]
                 }
             }]
-        }).then(function (competitions) {
+        }).then(function (usercompetition) {
+            console.log(JSON.stringify(usercompetition, 0, 2));
             var competitionsArray = [];
-            competitions.forEach(competition => {
+            usercompetition.forEach(usercompetition => {
+                var competition = usercompetition.competition;
                 if (competition.id === null) {
                     // TODO: Look into an issue where this can return an object with null values if it doesn't exist
                     return;
@@ -121,8 +144,8 @@ module.exports = function (app) {
                     title: competition.title,
                     id: competition.id
                 }
-                if (competition.participantCount) {
-                    competitionObject.participantCount = competition.participantCount
+                if (competition.competitions) {
+                    competitionObject.participantCount = competition.competitions.length; // TODO: Update to use a count function
                 }
 
                 competitionsArray.push(competitionObject);

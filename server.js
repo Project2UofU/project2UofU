@@ -105,14 +105,20 @@ const seed = () => {
       const thomas = result[1];
       const daniel = result[2];
       return Promise.all([
-        db.Competition.create({ title: "Weight Loss", ownerId: michael.id })
+        db.Competition.create({ title: "Weight Loss", ownerId: michael.id, startDate: moment().startOf('day').toDate(), endDate: moment().startOf('day').add(30, 'days').toDate() }),
+        db.Competition.create({ title: "Fat Burner", ownerId: michael.id, startDate: moment().startOf('day').toDate(), endDate: moment().startOf('day').add(30, 'days').toDate() }),
+        db.Competition.create({ title: "Weight Lifting", ownerId: thomas.id, startDate: moment().startOf('day').toDate(), endDate: moment().startOf('day').add(30, 'days').toDate() })
       ])
         .then(result => {
           const competition = result[0];
+          const competition2 = result[1];
+          const competition3 = result[2];
           return Promise.all([
             db.UserCompetition.create({ competitionId: competition.id, participantId: michael.id }),
             db.UserCompetition.create({ competitionId: competition.id, participantId: thomas.id }),
-            db.UserCompetition.create({ competitionId: competition.id, participantId: daniel.id }),
+            db.UserCompetition.create({ competitionId: competition.id, participantId: daniel.id }),,
+            db.UserCompetition.create({ competitionId: competition2.id, participantId: michael.id }),,
+            db.UserCompetition.create({ competitionId: competition3.id, participantId: thomas.id }),
             db.CompetitionEntry.create({ value: 164, date: moment().toDate(), competitionId: competition.id, userId: michael.id }),
             db.CompetitionEntry.create({ value: 167, date: moment().add(1, 'days').toDate(), competitionId: competition.id, userId: michael.id }),
             db.CompetitionEntry.create({ value: 165, date: moment().add(2, 'days').toDate(), competitionId: competition.id, userId: michael.id }),
