@@ -14,12 +14,10 @@ module.exports = function (sequelize, DataTypes) {
             primaryKey: true,
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
-        },
-        startDate: {
+        }, startDate: {
             type: DataTypes.DATE,
             allowNull: false
-        },
-        endDate: {
+        }, endDate: {
             type: DataTypes.DATE,
             allowNull: false
         }
@@ -28,6 +26,8 @@ module.exports = function (sequelize, DataTypes) {
     Competition.associate = function (models) {
         Competition.belongsTo(models.User, { as: 'owner', foreignKey: { allowNull: false } });
         Competition.hasMany(models.CompetitionEntry, {  as: "entries", foreignKey: 'competitionId', onDelete: 'cascade' });
+
+        // TODO: as: should probably be participants
         Competition.hasMany(models.UserCompetition, { as: "competitions", foreignKey: 'competitionId', onDelete: 'cascade' });
     };
 

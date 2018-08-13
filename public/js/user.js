@@ -70,7 +70,6 @@ function handleFormSubmit(event) {
     username: usernameInput.val().trim(),
     password: pswInput.val().trim(),
   };
-  console.log(newUser)
 
   API.saveUser(newUser)
 

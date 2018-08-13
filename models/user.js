@@ -26,6 +26,8 @@ module.exports = function (sequelize, DataTypes) {
     User.associate = function (models) {
         User.hasMany(models.Competition, { foreignKey: "ownerId", onDelete: "cascade" });
         User.hasMany(models.CompetitionEntry, { as: "entries", foreignKey: "userId", onDelete: "cascade" });
+        
+        // TODO: as: should probably be competitions
         User.hasMany(models.UserCompetition, { as: "participants", foreignKey: "participantId", onDelete: "cascade" });
     };
 

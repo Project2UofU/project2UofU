@@ -1,5 +1,4 @@
 function addChartToDivWithData(div, competitionData) {
-    console.log(competitionData);
     var randomNumber = Math.floor((Math.random() * 256) - 1);
 
     function randomColorOne() {
@@ -46,7 +45,6 @@ function addChartToDivWithData(div, competitionData) {
             for (var j = 0; j < entries.length; j++) {
                 var entry = entries[j];
                 timeDiff = moment(entry.date).diff(startTime, 'd');
-                // console.log("Time: " + timeDiff);
                 var data = {
                     x: timeDiff,
                     y: entry.value
@@ -65,10 +63,6 @@ function addChartToDivWithData(div, competitionData) {
     }
 
     function uniqueUser(values, username) {
-        values.push({
-            x: 15,
-            y: Math.random() * 100
-          });
         return {
             data: values,
             label: username,

@@ -15,11 +15,6 @@ module.exports = function (sequelize, DataTypes) {
         date: {
             type: DataTypes.DATE,
             allowNull: false
-        },
-        participantId: {
-            type: DataTypes.UUID,
-            allowNull: false,
-            unique: true
         }
     });
 

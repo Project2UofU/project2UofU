@@ -31,8 +31,6 @@ $(document).ready(function () {
             startDate: moment().startOf('day').toDate()
         }
 
-        console.log(competitionParams);
-
         API.create(competitionParams).done(function () {
             window.location.href = "/user/competitions";
         }).fail(function () {
