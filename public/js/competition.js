@@ -1,104 +1,91 @@
-console.log("working")
-// Get references to page elements
-var usernameInput = $("#name");
-// var emailInput = $("#email");
-var pswInput = $("#psw");
-// var pswRepeatInput = $("#psw-repeat");
-var signupBtn = $("#signupbtn");
-var $exampleList = $("#example-list");
-
 // The API object contains methods for each kind of request we'll make
 var API = {
-  saveUser: function(newComp) {
+  addUser: function (competitionId, username) {
+    if (!competitionId) { return undefined }
+    if (!username) { return undefined }
     return $.ajax({
       type: "POST",
-      url: "api/competition/create",
-      data: newComp
+      url: "api/competition/addParticipant",
+      data: {
+        competitionId: competitionId,
+        username: username
+      }
     });
   },
-  // getUsers: function() {
-  //   return $.ajax({
-  //     url: "api/user",
-  //     type: "GET"
-  //   });
-  // },
-  // deleteUser: function(id) {
-  //   return $.ajax({
-  //     url: "api/user/" + id,
-  //     type: "DELETE"
-  //   });
-  // }
-};
 
-// refreshExamples gets new examples from the db and repopulates the list
-// function refreshUsers() {
-//   API.getUsers().then(function(data) {
-//     var users = data.map(function(user) {
-//       var $a = $("<a>")
-//         .text(user.name)
-//         .attr("href", "/user/" + user.id);
+  addEntry: function (competitionId, userId, value, date) {
+    if (!competitionId) { return undefined }
+    if (!userId) { return undefined }
+    if (!value) { return undefined }
+    if (!date) { return undefined }
+    return $.ajax({
+      type: "POST",
+      url: "api/competition/addEntry",
+      data: {
+        competitionId: competitionId,
+        userId: userId,
+        value: value,
+        date: date
+      }
+    });
+  },
 
-//       var $li = $("<li>")
-//         .attr({
-//           class: "list-group-item",
-//           "data-id": user.id
-//         })
-//         .append($a);
+  getInfo: function (competitionId, cb) {
+    if (!competitionId) { return undefined }
+    return $.get("/api/competition/" + competitionId, function (data) {
+      var competition = data.competition;
+      cb(competition);
+    });
+  }
 
-//       var $button = $("<button>")
-//         .addClass("btn btn-danger float-right delete")
-//         .text("ｘ");
+}
 
-//       $li.append($button);
+$(document).ready(function () {
+  var competitionId = localStorage.getItem("competitionId");
+  var competitionName = localStorage.getItem("competitionTitle");
+  if (competitionName) {
+    $("#competition-name").text(competitionName);
+  }
+  if (competitionId) {
+    API.getInfo(competitionId, function (competition) {
+      addChartToDivWithData($("#competition-container"), competition);
+    });
+  }
 
-//       return $li;
-//     });
+  $("#competitions-btn").on('click', function () {
+    window.location.href = "/user/competitions";
+  });
 
-//     userList.empty();
-//     userList.append(users);
-//   });
-// };
+  $("#add-btn").on('click', function () {
+    var username = $("#username-field").val();
+    var competitionId = localStorage.getItem("competitionId");
+    if (!username || username.length == 0 || !competitionId) { return; }
 
-// handleFormSubmit is called whenever we submit a new example
-// Save the new example to the db and refresh the list
-function handleFormSubmit(event) {
-  event.preventDefault();
+    API.addUser(competitionId, username).done(function () {
+      window.location.href = window.location.href;
+    }).fail(function (error) {
+      var error = JSON.parse(error.responseText).error;
+      if (error) {
+        alert(error);
+      }
+    });
+  });
 
-  var newComp = {
-    username: usernameInput.val().trim(),
-    // email: emailInput.val().trim(),
-    password: pswInput.val().trim(),
-    // pswRepeat: pswRepeatInput.val().trim()
-  };
-console.log(newComp)
-  // if (!(newComp.name && newComp.email && newComp.password && newComp.pswRepeat)) {
-  //   alert("You must complete all fields!");
-  //   return;
-  // }
 
-  API.saveUser(newComp)
-  // .then(function() {
-  //   refreshUsers();
-  // });
+  $("#add-value-btn").on('click', function () {
+    var value = $("#value-field").val();
+    var competitionId = localStorage.getItem("competitionId");
+    var userId = localStorage.getItem("userId");
+    if (!userId || !value || !competitionId) { return; }
 
-  usernameInput.val("");
-  // emailInput.val("");
-  pswInput.val("");
-  // pswRepeatInput.val("");
-};
-
-// handleDeleteBtnClick is called when an example's delete button is clicked
-// Remove the example from the db and refresh the list
-// function handleDeleteBtnClick() {
-//   var idToDelete = $(this)
-//     .parent()
-//     .attr("data-id");
-
-//   API.deleteExample(idToDelete).then(function() {
-//     refreshExamples();
-//   });
-// };
-
-// Add event listeners to the submit and delete buttons
-signupBtn.on("click", handleFormSubmit);
-// $exampleList.on("click", ".delete", handleDeleteBtnClick);
+    var date = moment().startOf('day').toDate()
+    API.addEntry(competitionId, userId, value, date).done(function () {
+      window.location.href = window.location.href;
+    }).fail(function (error) {
+      var error = JSON.parse(error.responseText).error;
+      if (error) {
+        alert(error);
+      }
+    });
+  });
+});

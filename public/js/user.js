@@ -1,4 +1,3 @@
-console.log("working")
 // Get references to page elements
 
 // Signup elements
@@ -13,7 +12,7 @@ var loginBtn = $("#loginbtn");
 // The API object contains methods for each kind of request we'll make
 var API = {
   // Create new user
-  saveUser: function(newUser) {
+  saveUser: function (newUser) {
     return $.ajax({
       type: "POST",
       url: "api/user/create",
@@ -21,24 +20,31 @@ var API = {
     });
   },
   // Login with already created user
-  getUser: function(user) {
+  getUser: function (user) {
     return $.ajax({
       url: "api/user/login",
       type: "GET",
       data: user,
-      success: function(data, textStatus) {
-        if (data.message) {
+      success: function (data, textStatus) {
+        var user = data.user;
+        if (user) {
+          localStorage.setItem("username", user.username);
+          localStorage.setItem("userId", user.id);
           window.location.href = "/user/competitions"
         }
-      }
+      },
+      error: function (request, status, error) {
+        console.log(error);
+        var response = JSON.parse(request.responseText);
+        if (response.error) {
+          alert(response.error);
+        }
+      },
+
+
+
     });
-  },
-  // deleteUser: function(id) {
-  //   return $.ajax({
-  //     url: "api/user/" + id,
-  //     type: "DELETE"
-  //   });
-  // }
+  }
 };
 
 // Login function...
@@ -50,9 +56,8 @@ function handleLogin(event) {
     password: upswLogin.val().trim(),
   };
 
-  API.getUser(user);  
+  API.getUser(user);
 
-  unameLogin.val("");
   upswLogin.val("");
 };
 
@@ -65,10 +70,9 @@ function handleFormSubmit(event) {
     username: usernameInput.val().trim(),
     password: pswInput.val().trim(),
   };
-console.log(newUser)
-  
+
   API.saveUser(newUser)
-  
+
   usernameInput.val("");
   pswInput.val("");
 };

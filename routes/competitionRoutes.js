@@ -1,5 +1,6 @@
 var path = require("path");
 var db = require(path.join(__dirname, "../models"));
+var moment = require("moment");
 
 // /api/competition/*
 module.exports = function (app) {
@@ -7,15 +8,23 @@ module.exports = function (app) {
     app.post("/create", function (req, res) {
         var title = req.body.title;
         var ownerId = req.body.ownerId;
+        var startDate = req.body.startDate;
         if (!title) {
             return res.status(400).json({ error: "Missing title" });
         } else if (!ownerId) {
             return res.status(400).json({ error: "Missing ownerId" });
+        } else if (!startDate) {
+            return res.status(400).json({ error: "Missing startDate" });
         }
+
+        startDate = moment(startDate).startOf('day');
+        var endDate = moment(startDate).add(30, 'days').toDate();
 
         var competitionParams = {
             title: title,
-            ownerId: ownerId
+            ownerId: ownerId,
+            startDate: startDate,
+            endDate: endDate
         }
 
         // TODO: Find a better way to do this
@@ -164,39 +173,80 @@ module.exports = function (app) {
     });
 
     app.post("/addEntry", function (req, res) {
-        if (!req.body.competitionId) {
+        var competitionId = req.body.competitionId;
+        var userId = req.body.userId;
+        var value = req.body.value;
+        var date = req.body.date;
+        if (!competitionId) {
             return res.status(400).json({ error: "Missing competitionId" });
-        } else if (!req.body.userId) {
+        } else if (!userId) {
             return res.status(400).json({ error: "Missing userId" });
-        } else if (!req.body.value) {
+        } else if (!value) {
             return res.status(400).json({ error: "Missing value" });
+        } else if (!date) {
+            return res.status(400).json({ error: "Missing date" });
         }
 
-        db.CompetitionEntry.create({ value: req.body.value, competitionId: req.body.competitionId, userId: req.body.userId }).then(function (dbCompetitionEntry) {
-            res.json(dbCompetitionEntry);
+        db.CompetitionEntry.destroy({
+            where: {
+                competitionId: competitionId,
+                userId: userId,
+                date: date
+            }
+        }).then(function (dbCompetitionEntry) {
+            db.CompetitionEntry.create({ value: value, competitionId: competitionId, userId: userId, date: date }).then(function (dbCompetitionEntry) {
+                res.json(dbCompetitionEntry);
+            }).catch(function (err) {
+                res.status(400).json({ error: "Failed to add entry " + err });
+            });
         }).catch(function (err) {
-            res.send(err);
+            res.status(400).json({ error: "Failed to add entry " + err });
         });
     });
 
     app.post("/addParticipant", function (req, res) {
-        var participantId = req.body.participantId;
+        var username = req.body.username;
         var competitionId = req.body.competitionId;
-        if (!req.body.participantId) {
-            return res.status(400).json({ error: "Missing participantId" });
+        if (!req.body.username) {
+            return res.status(400).json({ error: "Missing username" });
         } else if (!req.body.competitionId) {
             return res.status(400).json({ error: "Missing competitionId" });
         }
 
-        var params = {
-            participantId: participantId,
-            competitionId: competitionId
-        }
+        console.log("Username: " + username);
+        db.User.findOne({
+            where: { username: username },
+            include: {
+                // where: { competitionId: competitionId }, // TODO: Figure out why this isn't working
+                as: "participants",
+                model: db.UserCompetition,
+                attributes: ["id", "participantId", "competitionId"]
+            }
+        }).then(function (dbUser) {
+            var alreadyInCompetition = false;
+            for (userCompetition of dbUser.participants) {
+                if (userCompetition.competitionId == competitionId) {
+                    alreadyInCompetition = true;
+                    break;
+                }
+            }
 
-        db.UserCompetition.create(params).then(function (dbUserCompetition) {
-            res.json(dbUserCompetition);
+            if (alreadyInCompetition) {
+                return res.status(400).json({ error: username + " is already a part of the competition" });
+            }
+
+            var params = {
+                participantId: dbUser.id,
+                competitionId: competitionId
+            }
+
+            db.UserCompetition.create(params).then(function (dbUserCompetition) {
+                res.json(dbUserCompetition);
+            }).catch(function (err) {
+                res.send(err);
+            });
         }).catch(function (err) {
-            res.send(err);
+            res.status(400).json({ error: "Couldn't add participant '" + username + "'" });
         });
 
     });
