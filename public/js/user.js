@@ -16,7 +16,15 @@ var API = {
     return $.ajax({
       type: "POST",
       url: "api/user/create",
-      data: newUser
+      data: newUser,
+      success: function (data, textStatus) {
+        var user = data.user;
+        if (user) {
+          localStorage.setItem("username", user.username);
+          localStorage.setItem("userId", user.id);
+          window.location.href = "/user/competitions"
+        }
+      }
     });
   },
   // Login with already created user

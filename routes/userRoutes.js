@@ -28,7 +28,7 @@ module.exports = function (app) {
             password: password
         }
         db.User.create(params).then(function (dbUser) {
-            res.redirect("http://localhost:8080/user/competitions");
+            res.json( {user: dbUser.get()} );
         }).catch(function (err) {
             res.send(err);
         });
