@@ -77,6 +77,7 @@ $(document).ready(function () {
     var competitionId = localStorage.getItem("competitionId");
     var userId = localStorage.getItem("userId");
     if (!userId || !value || !competitionId) { return; }
+    
 
     var date = moment().startOf('day').toDate()
     API.addEntry(competitionId, userId, value, date).done(function () {
