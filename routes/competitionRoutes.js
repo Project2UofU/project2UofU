@@ -49,59 +49,6 @@ module.exports = function (app) {
             res.status(400).json({ error: "User with ownerId " + `${req.body.ownerId}` + " does NOT exist" });
         });
     });
-
-    // Example:
-    // {
-    //     "competition": {
-    //         "title": "Weight Loss",
-    //         "id": "d4c39b3f-c644-4c51-a184-3826766793c4",
-    //         "participants": [
-    //             {
-    //                 "name": "Michael",
-    //                 "id": "fdec64f2-727b-440a-9aa5-5f4c71185cca",
-    //                 "entries": [
-    //                     {
-    //                         "date": "2018-08-11T16:30:30.000Z",
-    //                         "value": 351
-    //                     },
-    //                     {
-    //                         "date": "2018-08-11T17:35:40.000Z",
-    //                         "value": 61
-    //                     }
-    //                 ]
-    //             },
-    //             {
-    //                 "name": "Thomas",
-    //                 "id": "1760c27d-d2a2-4923-9c8c-c8fdc35b027f",
-    //                 "entries": [
-    //                     {
-    //                         "date": "2018-08-11T16:37:10.000Z",
-    //                         "value": 741
-    //                     },
-    //                     {
-    //                         "date": "2018-08-11T22:04:10.000Z",
-    //                         "value": 238
-    //                     }
-    //                 ]
-    //             },
-    //             {
-    //                 "name": "Daniel",
-    //                 "id": "50f69310-0bce-40b2-bfe5-501c455b1bae",
-    //                 "entries": [
-    //                     {
-    //                         "date": "2018-08-11T18:49:40.000Z",
-    //                         "value": 124
-    //                     },
-    //                     {
-    //                         "date": "2018-08-11T19:20:30.000Z",
-    //                         "value": 714
-    //                     }
-    //                 ]
-    //             }
-    //         ]
-    //     }
-    // }
-
     // URL: api/competition/[id]
     // Method: GET
     // Description: Get Competitions with their participants

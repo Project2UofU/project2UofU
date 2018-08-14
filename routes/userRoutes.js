@@ -72,17 +72,6 @@ module.exports = function (app) {
         });
     });
 
-    // Example:
-    // {
-    //     "competitions": [
-    //       {
-    //         "title": "Weight Loss",
-    //         "id": "49d5bccc-fd94-4f76-a8c5-8d0afe756618",
-    //         "participantCount": 3
-    //       }
-    //     ]
-    //   }
-
     // URL: api/user/competitions
     // Method: GET
     // Description: Get Competitions with the participant count
@@ -97,7 +86,7 @@ module.exports = function (app) {
             });
         }
 
-
+        //TODO
         // return db.Competition.findAll({
         //     where: {
         //         ownerId: ownerId
