@@ -22,7 +22,7 @@ var PORT = process.env.PORT || 8080;
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, '/public/')));
 
 
 // FB login
