@@ -15,7 +15,7 @@ $(document).ready(function () {
     var signupButton = $("#signup-btn");
 
     cancelButton.on('click', function () {
-        window.location.href = "/user/competitions";
+        window.location.href = "competitions";
     });
 
     signupButton.on('click', function () {
@@ -32,7 +32,7 @@ $(document).ready(function () {
         }
 
         API.create(competitionParams).done(function () {
-            window.location.href = "/user/competitions";
+            window.location.href = "competitions";
         }).fail(function () {
             alert("Failed to create the competition");
         });

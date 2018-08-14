@@ -20,7 +20,7 @@ module.exports = function (app, passport) {
     res.sendFile(path.join(publicPath, "signup.html"));
   });
 
-  app.get("/user/competitions", function (req, res) {
+  app.get("/competitions", function (req, res) {
     res.sendFile(path.join(publicPath, "list_of_competitions.html"));
   })
 };
