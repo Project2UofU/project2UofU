@@ -32,7 +32,7 @@ var API = {
 
   getInfo: function (competitionId, cb) {
     if (!competitionId) { return undefined }
-    return $.get("/api/competition/" + competitionId, function (data) {
+    return $.get("api/competition/" + competitionId, function (data) {
       var competition = data.competition;
       cb(competition);
     });
@@ -53,7 +53,7 @@ $(document).ready(function () {
   }
 
   $("#competitions-btn").on('click', function () {
-    window.location.href = "/user/competitions";
+    window.location.href = "competitions";
   });
 
   $("#add-btn").on('click', function () {

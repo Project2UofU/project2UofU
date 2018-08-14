@@ -58,8 +58,8 @@ $(document).ready(function() {
   
   // Submits a new competition and brings user to competitions page upon completion
   function submitCompetition(competition) {
-    $.post("/api/competitions", competition, function() {
-      window.location.href = "/competitions";
+    $.post("api/competitions", competition, function() {
+      window.location.href = "competitions";
     });
   }
   
@@ -68,10 +68,10 @@ $(document).ready(function() {
     var queryUrl;
     switch (type) {
     case "competition":
-      queryUrl = "/api/competitions/" + id;
+      queryUrl = "api/competitions/" + id;
       break;
     case "user":
-      queryUrl = "/api/users/" + id;
+      queryUrl = "api/users/" + id;
       break;
     default:
       return;
@@ -92,13 +92,13 @@ $(document).ready(function() {
   
   // A function to get Users and then render our list of Users
   function getUsers() {
-    $.get("/api/users", renderUserList);
+    $.get("api/users", renderUserList);
   }
   // Function to either render a list of users, or if there are none, direct the user to the page
   // to create an user first
   function renderUserList(data) {
     if (!data.length) {
-      window.location.href = "/users";
+      window.location.href = "users";
     }
     $(".hidden").removeClass("hidden");
     var rowsToAdd = [];
@@ -124,11 +124,11 @@ $(document).ready(function() {
   function updateCompetition(competition) {
     $.ajax({
       method: "PUT",
-      url: "/api/competitions",
+      url: "api/competitions",
       data: competition
     })
       .then(function() {
-        window.location.href = "/competitions";
+        window.location.href = "competitions";
       });
   }
 });

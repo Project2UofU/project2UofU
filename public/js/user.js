@@ -22,7 +22,7 @@ var API = {
         if (user) {
           localStorage.setItem("username", user.username);
           localStorage.setItem("userId", user.id);
-          window.location.href = "/user/competitions"
+          window.location.href = "competitions"
         }
       }
     });
@@ -38,7 +38,7 @@ var API = {
         if (user) {
           localStorage.setItem("username", user.username);
           localStorage.setItem("userId", user.id);
-          window.location.href = "/user/competitions"
+          window.location.href = "competitions"
         }
       },
       error: function (request, status, error) {

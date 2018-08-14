@@ -2,7 +2,7 @@ var API = {
     // This function grabs posts from the database and updates the view
     getCompetitions: function (userId, cb) {
         if (!userId) { return undefined }
-        return $.get("/api/user/competitions?userId=" + userId, function (data) {
+        return $.get("api/user/competitions?userId=" + userId, function (data) {
             var competitions = data.competitions ? data.competitions : [];
             cb(competitions);
         });
@@ -47,7 +47,7 @@ $(document).ready(function () {
         $(div).on('click', function () {
             localStorage.setItem("competitionId", $(this).data("id"));
             localStorage.setItem("competitionTitle", $(this).data("title"));
-            window.location.href = "/competition";
+            window.location.href = "competition";
         });
         return div;
     }
